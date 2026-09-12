@@ -1,0 +1,174 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system definition.
+ *
+ * The @theme inline block maps CSS custom properties to Tailwind utility
+ * classes (e.g. --color-primary -> bg-primary, text-primary).
+ *
+ * The :root and .dark blocks define the actual color values using rgb/rgba.
+ * All colors MUST use rgb/rgba format.
+ *
+ * To add a new semantic color:
+ * 1. Add the variable to :root (light value) and .dark (dark value)
+ * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  /*
+ ---break---
+ */
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  /*
+ ---break---
+ */
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: rgb(255,255,255);
+  --foreground: rgb(12,18,26);
+  --card: rgb(255,255,255);
+  --card-foreground: rgb(12,18,26);
+  --popover: rgb(255,255,255);
+  --popover-foreground: rgb(12,18,26);
+  --primary: rgb(0,83,80);
+  --primary-foreground: rgb(252,252,252);
+  --secondary: rgb(238,247,246);
+  --secondary-foreground: rgb(7,31,30);
+  --muted: rgb(239,247,246);
+  --muted-foreground: rgb(86,103,104);
+  --accent: rgb(214,242,239);
+  --accent-foreground: rgb(0,58,55);
+  --destructive: rgb(231,0,11);
+  --destructive-foreground: rgb(248,250,252);
+  --border: rgb(221,231,231);
+  --input: rgb(221,231,231);
+  --ring: rgb(0,83,80);
+  --brand-blue: rgb(0,136,242);
+  --brand-sky: rgb(0,184,225);
+  --brand-violet: rgb(146,100,239);
+  --brand-emerald: rgb(0,187,135);
+  --brand-amber: rgb(240,177,53);
+  --brand-rose: rgb(250,85,112);
+  --chart-1: rgb(245,73,0);
+  --chart-2: rgb(0,150,137);
+  --chart-3: rgb(16,78,100);
+  --chart-4: rgb(255,185,0);
+  --chart-5: rgb(254,154,0);
+  --sidebar: rgb(255,255,255);
+  --sidebar-foreground: rgb(12,18,26);
+  --sidebar-primary: rgb(0,83,80);
+  --sidebar-primary-foreground: rgb(252,252,252);
+  --sidebar-accent: rgb(214,242,239);
+  --sidebar-accent-foreground: rgb(0,58,55);
+  --sidebar-border: rgb(221,231,231);
+  --sidebar-ring: rgb(0,83,80);
+}
+
+.dark {
+  --background: rgb(2,6,24);
+  --foreground: rgb(248,250,252);
+  --card: rgb(15,23,43);
+  --card-foreground: rgb(248,250,252);
+  --popover: rgb(15,23,43);
+  --popover-foreground: rgb(248,250,252);
+  --primary: rgb(226,232,240);
+  --primary-foreground: rgb(15,23,43);
+  --secondary: rgb(29,41,61);
+  --secondary-foreground: rgb(248,250,252);
+  --muted: rgb(29,41,61);
+  --muted-foreground: rgb(144,161,185);
+  --accent: rgb(29,41,61);
+  --accent-foreground: rgb(248,250,252);
+  --destructive: rgb(255,100,103);
+  --destructive-foreground: rgb(248,250,252);
+  --border: rgba(255,255,255,0.1);
+  --input: rgba(255,255,255,0.15);
+  --ring: rgb(106,114,130);
+  --chart-1: rgb(20,71,230);
+  --chart-2: rgb(0,188,125);
+  --chart-3: rgb(254,154,0);
+  --chart-4: rgb(173,70,255);
+  --chart-5: rgb(255,32,86);
+  --sidebar: rgb(15,23,43);
+  --sidebar-foreground: rgb(248,250,252);
+  --sidebar-primary: rgb(20,71,230);
+  --sidebar-primary-foreground: rgb(248,250,252);
+  --sidebar-accent: rgb(29,41,61);
+  --sidebar-accent-foreground: rgb(248,250,252);
+  --sidebar-border: rgba(255,255,255,0.1);
+  --sidebar-ring: rgb(106,114,130);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+}

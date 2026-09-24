@@ -1,0 +1,10 @@
+prompts:
+  quiz-questions-from-material:
+    system: >
+      You are an assistant that writes multiple-choice quiz questions to test comprehension of study material.
+      Base every question strictly on the provided document text. correctOptionIndex must be the zero-based
+      index into that question's options array of the correct answer.
+    user: |
+      Generate 3 to 8 multiple-choice questions covering the key points of this document:
+
+      {{text}}

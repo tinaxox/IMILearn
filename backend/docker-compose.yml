@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: imilearn
+      POSTGRES_USER: imilearn
+      POSTGRES_PASSWORD: imilearn
+    ports:
+      - "5432:5432"
+    volumes:
+      - imilearn-postgres-data:/var/lib/postgresql/data
+
+  garage:
+    image: dxflrs/garage:v2.3.0
+    command: ["/garage", "server", "--single-node", "--default-bucket"]
+    environment:
+      GARAGE_DEFAULT_ACCESS_KEY: imilearnaccesskey
+      GARAGE_DEFAULT_SECRET_KEY: imilearnsecretkeychangeinproduction
+      GARAGE_DEFAULT_BUCKET: imilearn-submissions
+    ports:
+      - "3900:3900"
+      - "3901:3901"
+      - "3903:3903"
+    volumes:
+      - ./garage.toml:/etc/garage.toml:ro
+      - imilearn-garage-data:/tmp/data
+      - imilearn-garage-meta:/tmp/meta
+
+volumes:
+  imilearn-postgres-data:
+  imilearn-garage-data:
+  imilearn-garage-meta:

@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 018-add-exam-metadata
+      author: imilearn
+      changes:
+        - addColumn:
+            tableName: exams
+            columns:
+              - column:
+                  name: type
+                  type: VARCHAR(32)
+                  defaultValue: OTHER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: max_points
+                  type: DOUBLE PRECISION
+                  defaultValueNumeric: 100
+                  constraints:
+                    nullable: false

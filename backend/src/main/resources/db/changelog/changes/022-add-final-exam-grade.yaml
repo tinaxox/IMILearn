@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: 022-add-final-exam-grade
+      author: imilearn
+      changes:
+        - dropNotNullConstraint:
+            tableName: exam_grades
+            columnName: points
+            columnDataType: DOUBLE PRECISION
+        - addColumn:
+            tableName: exam_grades
+            columns:
+              - column:
+                  name: grade
+                  type: INTEGER
+        - sql:
+            sql: UPDATE exam_grades eg SET grade = CAST(eg.points AS INTEGER), points = NULL FROM exams e WHERE eg.exam_id = e.id AND e.type = 'FINAL' AND eg.points BETWEEN 5 AND 10 AND eg.points = FLOOR(eg.points)
+        - sql:
+            sql: ALTER TABLE exam_grades ADD CONSTRAINT chk_exam_grades_grade_range CHECK (grade IS NULL OR grade BETWEEN 5 AND 10)
+      rollback:
+        - sql:
+            sql: ALTER TABLE exam_grades DROP CONSTRAINT chk_exam_grades_grade_range
+        - sql:
+            sql: UPDATE exam_grades SET points = grade WHERE points IS NULL AND grade IS NOT NULL
+        - dropColumn:
+            tableName: exam_grades
+            columnName: grade
+        - addNotNullConstraint:
+            tableName: exam_grades
+            columnName: points
+            columnDataType: DOUBLE PRECISION

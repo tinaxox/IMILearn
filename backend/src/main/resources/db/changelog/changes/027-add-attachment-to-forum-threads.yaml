@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 027-add-attachment-to-forum-threads
+      author: imilearn
+      changes:
+        - addColumn:
+            tableName: forum_threads
+            columns:
+              - column:
+                  name: attachment_storage_key
+                  type: VARCHAR
+              - column:
+                  name: attachment_file_name
+                  type: VARCHAR
+              - column:
+                  name: attachment_content_type
+                  type: VARCHAR
+              - column:
+                  name: attachment_size_bytes
+                  type: BIGINT

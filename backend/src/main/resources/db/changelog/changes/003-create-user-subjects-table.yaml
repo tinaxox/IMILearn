@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-create-user-subjects-table
+      author: imilearn
+      changes:
+        - createTable:
+            tableName: user_subjects
+            columns:
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_subjects_user
+                    references: users(id)
+              - column:
+                  name: subject_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_subjects_subject
+                    references: subjects(id)
+        - addUniqueConstraint:
+            tableName: user_subjects
+            columnNames: user_id, subject_id
+            constraintName: uq_user_subjects_user_subject

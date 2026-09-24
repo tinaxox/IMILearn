@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 021-make-exam-max-points-optional
+      author: imilearn
+      changes:
+        - dropDefaultValue:
+            tableName: exams
+            columnName: max_points
+            columnDataType: DOUBLE PRECISION
+        - dropNotNullConstraint:
+            tableName: exams
+            columnName: max_points
+            columnDataType: DOUBLE PRECISION

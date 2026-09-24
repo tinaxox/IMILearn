@@ -60,7 +60,9 @@ export function AddMembersDialog({ open, onOpenChange, subjectId, candidates }: 
               })} />
               <span className="min-w-0 flex-1">
                 <span className="block font-medium">{candidate.name} {candidate.surname}</span>
-                <span className="block text-xs text-muted-foreground">{candidate.index || "-"} / Year {candidate.year ?? "-"}</span>
+                {candidate.type === "STUDENT" && candidate.index && (
+                  <span className="block text-xs text-muted-foreground">{candidate.index}</span>
+                )}
               </span>
             </label>
           })}

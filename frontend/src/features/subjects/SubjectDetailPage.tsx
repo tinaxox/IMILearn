@@ -54,7 +54,10 @@ export default function SubjectDetailPage() {
   const removeMaterial = useMutation({ mutationFn: (material: Material) => apiClient.delete(`/materials/${material.id}`), onSuccess: async () => { await closeAndInvalidate("Material deleted", ["materials", "by-subject", id]); setDeleteMaterial(undefined) } })
   const removeSubjectMember = useMutation({ mutationFn: (userId: number) => apiClient.delete(`/subjects/${id}/members/${userId}`), onSuccess: () => closeAndInvalidate("Member removed", ["subjects", id, "members"]) })
   const isUrl = (path: string) => /^https?:\/\//i.test(path)
-  const memberCandidates = (allUsers.data ?? []).filter((candidate) => candidate.type === "STUDENT" && !members.data?.some((member) => member.id === candidate.id))
+  const memberCandidates = (allUsers.data ?? []).filter((candidate) =>
+    (user?.type === "ADMIN" || candidate.type === "STUDENT")
+      && !members.data?.some((member) => member.id === candidate.id),
+  )
   const materialColumns: DataTableColumnDef<Material>[] = [
     { accessorKey: "name", header: "Name", cell: ({ row }) => <div className="flex flex-col"><span className="font-medium">{row.original.name}</span></div> },
     { accessorKey: "category", header: "Type", cell: ({ row }) => row.original.category && row.original.category !== "OTHER" ? <span className="text-muted-foreground">{materialCategoryLabel[row.original.category]}</span> : "-" },

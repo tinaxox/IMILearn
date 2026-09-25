@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: 012-create-material-questions-table
+      author: imilearn
+      changes:
+        - createTable:
+            tableName: material_questions
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: material_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_material_questions_material
+                    references: materials(id)
+              - column:
+                  name: questions
+                  type: JSONB
+                  constraints:
+                    nullable: false
+              - column:
+                  name: answers
+                  type: JSONB
+                  constraints:
+                    nullable: false
+              - column:
+                  name: generated_by_model
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: deleted_at
+                  type: TIMESTAMP WITH TIME ZONE

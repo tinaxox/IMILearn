@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 017-add-text-to-assignment-submissions
+      author: imilearn
+      changes:
+        - addColumn:
+            tableName: assignment_submissions
+            columns:
+              - column:
+                  name: text_content
+                  type: TEXT

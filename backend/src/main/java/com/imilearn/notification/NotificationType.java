@@ -1,0 +1,13 @@
+package com.imilearn.notification;
+
+public enum NotificationType {
+    SUBJECT_MEMBER_ADDED,
+    ASSIGNMENT_CREATED,
+    EXAM_SCHEDULED,
+    EXAM_TIME_CHANGED,
+    ASSIGNMENT_GRADED,
+    EXAM_GRADED,
+    FORUM_THREAD_CREATED,
+    FORUM_POST_CREATED,
+    FORUM_MENTION
+}

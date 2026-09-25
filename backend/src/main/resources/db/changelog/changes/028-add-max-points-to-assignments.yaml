@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 028-add-max-points-to-assignments
+      author: imilearn
+      changes:
+        - addColumn:
+            tableName: assignments
+            columns:
+              - column:
+                  name: max_points
+                  type: DOUBLE PRECISION

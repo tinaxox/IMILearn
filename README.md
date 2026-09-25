@@ -13,6 +13,8 @@ Postoje 3 role - ADMIN, STUDENT, PROFESOR.
 - Frontend: http://localhost:5173
 - Backend:  http://localhost:8080
 
+Početno ulogovanje: admin@imilearn.com changeme123
+
 *Testovi*
 
 **backend**

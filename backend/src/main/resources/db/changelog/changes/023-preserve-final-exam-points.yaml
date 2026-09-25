@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 023-preserve-final-exam-points
+      author: imilearn
+      changes:
+        - sql:
+            sql: UPDATE exam_grades SET points = grade, grade = NULL WHERE points IS NULL AND grade IS NOT NULL AND (updated_at IS NULL OR updated_at < (SELECT dateexecuted FROM databasechangelog WHERE id = '022-add-final-exam-grade' AND author = 'imilearn'))

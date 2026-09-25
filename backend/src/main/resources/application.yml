@@ -1,0 +1,44 @@
+server:
+  port: 8080
+
+spring:
+  config:
+    import: classpath:prompts.yml
+  application:
+    name: imilearn
+  datasource:
+    url: jdbc:postgresql://localhost:5432/imilearn
+    username: imilearn
+    password: imilearn
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:change-this-super-secret-key-change-this-super-secret-key}
+    expiration-ms: 86400000
+  storage:
+    endpoint: ${GARAGE_ENDPOINT:http://localhost:3900}
+    region: ${GARAGE_REGION:garage}
+    access-key: ${GARAGE_ACCESS_KEY:imilearnaccesskey}
+    secret-key: ${GARAGE_SECRET_KEY:imilearnsecretkeychangeinproduction}
+    bucket: ${GARAGE_BUCKET:imilearn-submissions}
+    presign-expiration-minutes: 15
+    max-file-size-mb: 50
+  openrouter:
+    api-key: ${OPENROUTER_API_KEY:changeme}
+    base-url: https://openrouter.ai/api/v1
+    model: nvidia/nemotron-3-super-120b-a12b:free
+  admin:
+    email: ${ADMIN_EMAIL:admin@imilearn.com}
+    password: ${ADMIN_PASSWORD:changeme123}
+    name: ${ADMIN_NAME:Admin}
+    surname: ${ADMIN_SURNAME:User}

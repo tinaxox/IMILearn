@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 019-add-material-category
+      author: imilearn
+      changes:
+        - addColumn:
+            tableName: materials
+            columns:
+              - column:
+                  name: category
+                  type: VARCHAR(32)
+                  defaultValue: OTHER
+                  constraints:
+                    nullable: false

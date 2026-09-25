@@ -22,22 +22,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // The frontend dev server (Vite, :5173) proxies /ws through to this backend (:8080),
-        // but the browser's Origin header still reflects :5173, which Spring's SockJS/WebSocket
-        // origin check rejects by default (403 on the raw "websocket" transport handshake,
-        // silently degrading to a less reliable HTTP transport). Allow any origin here since
-        // this endpoint is already authenticated per-connection.
         registry.addEndpoint("/ws").setAllowedOriginPatterns("*").setHandshakeHandler(jwtHandshakeHandler)
                 .withSockJS();
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        // "/queue" must be registered too: per-user destinations (e.g. /user/queue/notifications,
-        // used by SimpMessagingTemplate#convertAndSendToUser) are translated internally to a
-        // literal /queue/... destination per session. Without /queue enabled here, the simple
-        // broker doesn't recognize that destination at all and silently drops the message after
-        // translation - only "/topic" broadcasts (like forum replies) were ever delivered.
         registry.enableSimpleBroker("/topic", "/queue");
         registry.setApplicationDestinationPrefixes("/app");
         registry.setUserDestinationPrefix("/user");

@@ -24,10 +24,6 @@ interface GradingMeta {
   maxPoints: number | null | undefined
 }
 
-// Defined once at module scope so these cell renderers keep a stable identity across every
-// render: @tanstack/react-table's flexRender treats any function as a component and re-mounts
-// it whenever the reference changes, which would reset input focus after every keystroke.
-// Shared, changing data comes in through `context.table.options.meta` instead of a closure.
 function IndexYearCell({ row }: DataTableCellContext<ExamGrade>) {
   return <>{row.original.studentIndex || "-"} / {row.original.studentYear ?? "-"}</>
 }

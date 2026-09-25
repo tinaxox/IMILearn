@@ -143,14 +143,12 @@ export function ThreadCard({ thread, subjectId, subjectMembers, canEdit, canDele
 
     const previousScrollHeight = previousRepliesScrollHeightRef.current
     if (previousScrollHeight !== null) {
-      // User scrolled up to reveal older replies; keep their view anchored instead of jumping.
       repliesPane.scrollTop += repliesPane.scrollHeight - previousScrollHeight
       previousRepliesScrollHeightRef.current = null
       return
     }
 
     if (visibleReplyCount < replies.length && repliesPane.scrollHeight <= repliesPane.clientHeight) {
-      // Not enough replies rendered yet to fill the pane; reveal more so scrolling up can load the rest.
       setVisibleReplyCount((current) => Math.min(current + 3, replies.length))
       return
     }

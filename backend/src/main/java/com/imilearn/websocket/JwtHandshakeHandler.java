@@ -15,13 +15,6 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 import org.springframework.web.util.UriComponentsBuilder;
 
-/**
- * Resolves the WebSocket session's Principal from a JWT passed as a query parameter during the
- * initial HTTP handshake. This is what actually populates Spring's SimpUserRegistry, which
- * SimpMessagingTemplate#convertAndSendToUser relies on to find a user's active sessions -
- * setting the user only on the STOMP CONNECT frame (via a ChannelInterceptor) is not enough for
- * that registry to see it, even though the CONNECT itself appears to succeed.
- */
 @Component
 @RequiredArgsConstructor
 public class JwtHandshakeHandler extends DefaultHandshakeHandler {

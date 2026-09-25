@@ -128,7 +128,6 @@ export const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(function
       const uploaded = await uploadFiles(files)
       setUploadedFiles(multiple ? [...uploadedFiles, ...uploaded] : uploaded.slice(0, 1))
     } catch {
-      // uploadFiles applies the caller's configured error behavior.
     }
   }
 

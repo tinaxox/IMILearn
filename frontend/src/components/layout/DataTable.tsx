@@ -25,7 +25,6 @@ export interface DataTableProps<TData extends RowData, TMeta = unknown> {
   data: TData[]
   containerClassName?: string
   getRowClassName?: (row: TData) => string | undefined
-  /** Arbitrary shared data/callbacks, readable in any cell via `context.table.options.meta`. Use this instead of closing over component state in a `cell` renderer, since that would give the renderer a new identity every render and reset input focus. */
   meta?: TMeta
 }
 

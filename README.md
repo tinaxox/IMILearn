@@ -1,5 +1,4 @@
 # IMILearn
-Aplikacija za lako učenje. 
 
 Aplikacija omogućava studentima da uče, vežbaju, prate kolokvijume i ispite, njihove poene i krajnje ocene na jednom mestu.
 Postoje 3 role - ADMIN, STUDENT, PROFESOR.

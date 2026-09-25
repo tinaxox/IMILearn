@@ -107,3 +107,6 @@ U *header-u* ove aplikacije se nalazi ime i prezime ulogovanog korisnika, gde kl
 - Environment variables (`.env`)
 - Bash startup skripta (`start.sh`) koja pokreće Docker servise, backend i frontend zajedno
 - npm/Vite za frontend build i development server
+
+<img width="1492" height="1119" alt="image" src="https://github.com/user-attachments/assets/ceb71fad-a81c-4ba6-977b-11c624102fd3" />
+

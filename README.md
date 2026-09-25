@@ -72,37 +72,38 @@ U *header-u* ove aplikacije se nalazi ime i prezime ulogovanog korisnika, gde kl
 
 *FRONTEND:*
 
-React + TypeScript
-Vite
-Tailwind CSS
-shadcn UI components
-React Router
-TanStack React Query
-Axios
-React Hook Form
-STOMP/SockJS 
+- React + TypeScript
+- Vite
+- Tailwind CSS
+- shadcn UI components
+- React Router
+- TanStack React Query
+- Axios
+- React Hook Form
+- STOMP/SockJS
 
 *BACKEND:*
 
-Java Spring Boot
-Spring Web MVC
-Spring Security + JWT authentication
-Spring Data JPA / Hibernate
-PostgreSQL
-Liquibase database migrations
-WebSocket/STOMP notifications
-Amazon S3 SDK, Garage, S3-compatible file storage
-OpenRouter integration za kreiranje AI kviza
+- Java
+- Spring Boot
+- Spring Web MVC
+- Spring Security + JWT authentication
+- Spring Data JPA / Hibernate
+- PostgreSQL
+- Liquibase database migrations
+- WebSocket/STOMP notifications
+- Amazon S3 SDK, Garage, S3-compatible file storage
+- OpenRouter integracija za kreiranje AI kviza
 
 *TESTING:*
 
-JUnit
-Mockito
-Playwright
+- JUnit
+- Mockito
+- Playwright
 
 *DEPLOYMENT:*
 
-Docker and Docker Compose
-Environment variables .env
-Bash startup skripta (start.sh) koja pokreće Docker services, backend i frontend zajedno
-npm/Vite for frontend build and development server
+- Docker i Docker Compose
+- Environment variables (`.env`)
+- Bash startup skripta (`start.sh`) koja pokreće Docker servise, backend i frontend zajedno
+- npm/Vite za frontend build i development server

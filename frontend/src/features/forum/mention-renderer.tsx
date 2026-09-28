@@ -9,7 +9,7 @@ function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 }
 
-export function renderWithMentions(body: string, members: User[]): ReactNode[] {
+export function renderWithMentions(body: string, members: User[], mentionClassName = "font-medium text-primary"): ReactNode[] {
   const names = [...new Set(members.map(getFullName).filter(Boolean))].sort((first, second) => second.length - first.length)
   if (names.length === 0) return [body]
 
@@ -23,7 +23,7 @@ export function renderWithMentions(body: string, members: User[]): ReactNode[] {
     if (precedingCharacter && /[\p{L}\p{N}]/u.test(precedingCharacter)) continue
 
     if (index > lastIndex) rendered.push(body.slice(lastIndex, index))
-    rendered.push(<span key={`${index}-${match[0]}`} className="font-medium text-primary">{match[0]}</span>)
+    rendered.push(<span key={`${index}-${match[0]}`} className={mentionClassName}>{match[0]}</span>)
     lastIndex = index + match[0].length
   }
 

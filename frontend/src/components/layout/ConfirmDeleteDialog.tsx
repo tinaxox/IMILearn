@@ -5,17 +5,28 @@ interface ConfirmDeleteDialogProps {
   onOpenChange: (open: boolean) => void
   title: string
   description?: string
+  confirmLabel?: string
+  pendingLabel?: string
   onConfirm: () => void
   pending?: boolean
 }
 
-export function ConfirmDeleteDialog({ open, onOpenChange, title, description = "This action cannot be undone.", onConfirm, pending = false }: ConfirmDeleteDialogProps) {
+export function ConfirmDeleteDialog({
+  open,
+  onOpenChange,
+  title,
+  description = "This action cannot be undone.",
+  confirmLabel = "Delete",
+  pendingLabel = "Deleting...",
+  onConfirm,
+  pending = false,
+}: ConfirmDeleteDialogProps) {
   return <AlertDialog open={open} onOpenChange={onOpenChange}>
     <AlertDialogContent>
       <AlertDialogHeader><AlertDialogTitle>{title}</AlertDialogTitle><AlertDialogDescription>{description}</AlertDialogDescription></AlertDialogHeader>
       <AlertDialogFooter>
         <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction variant="destructive" disabled={pending} onClick={onConfirm}>{pending ? "Deleting..." : "Delete"}</AlertDialogAction>
+        <AlertDialogAction variant="destructive" disabled={pending} onClick={onConfirm}>{pending ? pendingLabel : confirmLabel}</AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

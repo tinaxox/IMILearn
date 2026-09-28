@@ -1,7 +1,9 @@
 import { forwardRef, useEffect, useMemo, useRef, useState } from "react"
 import type { ComponentProps, KeyboardEvent, MouseEvent } from "react"
 import { createPortal } from "react-dom"
+import { cn } from "cn"
 import { Textarea } from "@/components/ui/textarea"
+import { renderWithMentions } from "@/features/forum/mention-renderer"
 import type { User } from "@/types/api"
 
 interface ActiveMention {
@@ -16,12 +18,15 @@ type MentionTextareaProps = Omit<ComponentProps<typeof Textarea>, "value" | "onC
   subjectMembers: User[]
 }
 
+const DROPDOWN_MAX_HEIGHT = 224
+const DROPDOWN_GAP = 4
+
 function getFullName(member: User): string {
   return `${member.name} ${member.surname}`.trim()
 }
 
 function findActiveMention(value: string, cursor: number): ActiveMention | null {
-  for (let index = cursor - 1; index >= 0 && !/\s/u.test(value[index]); index -= 1) {
+  for (let index = cursor - 1; index >= 0 && value[index] !== "\n"; index -= 1) {
     if (value[index] !== "@") continue
 
     const precedingCharacter = value[index - 1]
@@ -38,9 +43,10 @@ export const MentionTextarea = forwardRef<HTMLTextAreaElement, MentionTextareaPr
   forwardedRef,
 ) {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
+  const backdropRef = useRef<HTMLDivElement | null>(null)
   const [activeMention, setActiveMention] = useState<ActiveMention | null>(null)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
-  const [dropdownRect, setDropdownRect] = useState<{ left: number; top: number; width: number } | null>(null)
+  const [dropdownRect, setDropdownRect] = useState<{ left: number; width: number; top?: number; bottom?: number; maxHeight: number } | null>(null)
 
   const matches = useMemo(() => {
     if (!activeMention) return []
@@ -79,7 +85,15 @@ export const MentionTextarea = forwardRef<HTMLTextAreaElement, MentionTextareaPr
 
     const updateRect = () => {
       const rect = textareaRef.current?.getBoundingClientRect()
-      if (rect) setDropdownRect({ left: rect.left, top: rect.bottom, width: rect.width })
+      if (!rect) return
+
+      const spaceBelow = window.innerHeight - rect.bottom - DROPDOWN_GAP * 2
+      const spaceAbove = rect.top - DROPDOWN_GAP * 2
+      const openAbove = spaceBelow < DROPDOWN_MAX_HEIGHT && spaceAbove > spaceBelow
+
+      setDropdownRect(openAbove
+        ? { left: rect.left, width: rect.width, bottom: window.innerHeight - rect.top + DROPDOWN_GAP, maxHeight: Math.min(DROPDOWN_MAX_HEIGHT, spaceAbove) }
+        : { left: rect.left, width: rect.width, top: rect.bottom + DROPDOWN_GAP, maxHeight: Math.min(DROPDOWN_MAX_HEIGHT, spaceBelow) })
     }
 
     updateRect()
@@ -110,9 +124,21 @@ export const MentionTextarea = forwardRef<HTMLTextAreaElement, MentionTextareaPr
     }
   }
 
-  return <div className="relative">
+  return <div className="relative rounded-lg bg-white dark:bg-input/30">
+    <div
+      ref={backdropRef}
+      aria-hidden
+      className="pointer-events-none absolute inset-0 overflow-hidden whitespace-pre-wrap wrap-break-word rounded-lg border border-transparent px-3 py-2.5 text-base md:text-sm"
+    >
+      {renderWithMentions(value, subjectMembers, "text-primary")}{" "}
+    </div>
     <Textarea
       {...props}
+      className={cn("relative bg-transparent text-transparent caret-foreground dark:bg-transparent", props.className)}
+      onScroll={(event) => {
+        if (backdropRef.current) backdropRef.current.scrollTop = event.currentTarget.scrollTop
+        props.onScroll?.(event)
+      }}
       ref={(element) => {
         textareaRef.current = element
         if (typeof forwardedRef === "function") forwardedRef(element)
@@ -145,8 +171,8 @@ export const MentionTextarea = forwardRef<HTMLTextAreaElement, MentionTextareaPr
     {dropdownOpen && dropdownRect && createPortal(
       <div
         role="listbox"
-        style={{ position: "fixed", left: dropdownRect.left, top: dropdownRect.top, width: dropdownRect.width }}
-        className="z-50 mt-1 flex max-h-56 flex-col gap-1 overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md"
+        style={{ position: "fixed", left: dropdownRect.left, top: dropdownRect.top, bottom: dropdownRect.bottom, width: dropdownRect.width, maxHeight: dropdownRect.maxHeight }}
+        className="z-50 flex flex-col gap-1 overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md"
       >
         {matches.map((member, index) => <button
           key={member.id}

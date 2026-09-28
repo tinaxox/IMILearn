@@ -73,7 +73,7 @@ export function AppLayout() {
           </aside>
 
           <main className="min-w-0 flex-1 overflow-y-auto bg-background px-4 py-6 md:px-8 md:py-8">
-            <div className="mx-auto w-full max-w-[90rem]"><Outlet /></div>
+            <div className="mx-auto h-full w-full max-w-[90rem]"><Outlet /></div>
           </main>
         </div>
     </div>

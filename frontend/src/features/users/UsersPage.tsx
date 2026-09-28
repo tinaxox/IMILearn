@@ -12,18 +12,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
 import { Skeleton } from "@/components/ui/skeleton"
 import { DataTable, type DataTableColumnDef } from "@/components/layout/DataTable"
+import { ConfirmDeleteDialog } from "@/components/layout/ConfirmDeleteDialog"
 import { UserForm, type UserFormValues } from "@/features/users/UserForm"
 
 export default function UsersPage() {
@@ -131,15 +122,15 @@ export default function UsersPage() {
         </DialogContent>
       </Dialog>
 
-      <AlertDialog open={deletingUser !== null} onOpenChange={(open) => { if (!open) setDeletingUser(null) }}>
-        <AlertDialogContent>
-          <AlertDialogHeader><AlertDialogTitle>Delete user?</AlertDialogTitle><AlertDialogDescription>This will deactivate {deletingUser?.email}. This action cannot be undone from this page.</AlertDialogDescription></AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction variant="destructive" disabled={deleteMutation.isPending} onClick={() => deletingUser && deleteMutation.mutate(deletingUser.id)}>{deleteMutation.isPending ? "Deleting..." : "Delete user"}</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDeleteDialog
+        open={deletingUser !== null}
+        onOpenChange={(open) => { if (!open) setDeletingUser(null) }}
+        title="Delete user?"
+        description={`This will deactivate ${deletingUser?.email}. This action cannot be undone from this page.`}
+        confirmLabel="Delete user"
+        pending={deleteMutation.isPending}
+        onConfirm={() => deletingUser && deleteMutation.mutate(deletingUser.id)}
+      />
     </div>
   )
 }

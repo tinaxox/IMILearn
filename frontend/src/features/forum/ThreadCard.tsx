@@ -1,15 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { FileText, MoreVertical, Pencil, Trash2 } from "lucide-react"
+import { FileText } from "lucide-react"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { FileUpload, type FileUploadHandle, type UploadedFile } from "@/components/layout/FileUpload"
+import { EntityActionsMenu } from "@/components/layout/EntityActionsMenu"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -166,17 +166,20 @@ export function ThreadCard({ thread, subjectId, subjectMembers, canEdit, canDele
               <p className="truncate text-sm font-medium">{thread.authorName}</p>
               <p className="text-xs text-muted-foreground">{formatDateTime(thread.createdAt)}</p>
             </div>
-            {(canEdit(thread.authorId) || canDelete(thread.authorId)) && <DropdownMenu>
-              <DropdownMenuTrigger render={<Button type="button" size="icon-xs" variant="ghost" className="text-muted-foreground" aria-label="Thread actions" />}><MoreVertical /></DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {canEdit(thread.authorId) && <DropdownMenuItem onClick={openThreadEditor}><Pencil /> Edit</DropdownMenuItem>}
-                {canDelete(thread.authorId) && <DropdownMenuItem variant="destructive" onClick={() => onDeleteThread(thread.id)}><Trash2 /> Delete</DropdownMenuItem>}
-              </DropdownMenuContent>
-            </DropdownMenu>}
+            <EntityActionsMenu
+              ariaLabel="Thread actions"
+              canEdit={canEdit(thread.authorId)}
+              canDelete={canDelete(thread.authorId)}
+              onEdit={openThreadEditor}
+              onDelete={() => onDeleteThread(thread.id)}
+            />
           </div>
           <h3 className="mt-2 font-semibold leading-snug">{thread.title}</h3>
           <p className="mt-1 whitespace-pre-wrap text-sm leading-5">{renderWithMentions(thread.body, subjectMembers)}</p>
-          {thread.attachmentFileName && <Button type="button" variant="outline" size="sm" className="mt-3 max-w-full justify-start" onClick={() => void downloadAttachment()}><FileText className="size-4 shrink-0 text-primary" /><span className="truncate">{thread.attachmentFileName}</span></Button>}
+          {thread.attachmentFileName && <Button type="button" variant="outline" size="sm" className="mt-3 max-w-full justify-start" onClick={() => void downloadAttachment()}>
+            <FileText className="size-4 shrink-0 text-primary" />
+            <span className="truncate">{thread.attachmentFileName}</span>
+            </Button>}
         </div>
       </article>
 
@@ -198,13 +201,13 @@ export function ThreadCard({ thread, subjectId, subjectMembers, canEdit, canDele
                   <p className="truncate text-xs font-medium text-foreground">{post.authorName}</p>
                   <p className="text-[11px] text-muted-foreground">{formatDateTime(post.createdAt)}</p>
                 </div>
-                {(canEdit(post.authorId) || canDelete(post.authorId)) && <DropdownMenu>
-                  <DropdownMenuTrigger render={<Button type="button" size="icon-xs" variant="ghost" className="text-muted-foreground" aria-label="Reply actions" />}><MoreVertical /></DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    {canEdit(post.authorId) && <DropdownMenuItem onClick={() => openPostEditor(post)}><Pencil /> Edit</DropdownMenuItem>}
-                    {canDelete(post.authorId) && <DropdownMenuItem variant="destructive" onClick={() => onDeletePost(post.id, thread.id)}><Trash2 /> Delete</DropdownMenuItem>}
-                  </DropdownMenuContent>
-                </DropdownMenu>}
+                <EntityActionsMenu
+                  ariaLabel="Reply actions"
+                  canEdit={canEdit(post.authorId)}
+                  canDelete={canDelete(post.authorId)}
+                  onEdit={() => openPostEditor(post)}
+                  onDelete={() => onDeletePost(post.id, thread.id)}
+                />
               </div>
               <p className="mt-0.5 whitespace-pre-wrap text-sm leading-5">{renderWithMentions(post.body, subjectMembers)}</p>
             </div>
@@ -213,7 +216,8 @@ export function ThreadCard({ thread, subjectId, subjectMembers, canEdit, canDele
 
         <form className="mt-2 flex items-center gap-2 pt-2" onSubmit={postForm.handleSubmit((values) => createPost.mutate(values))}>
           <div className="min-w-0 flex-1">
-            <Controller control={postForm.control} name="body" defaultValue="" render={({ field }) => <MentionTextarea aria-label={`Reply to ${thread.title}`} placeholder="Write a reply..." className="min-h-16 resize-none" subjectMembers={subjectMembers} {...field} />} />
+            <Controller control={postForm.control} name="body" defaultValue="" render={({ field }) => 
+              <MentionTextarea aria-label={`Reply to ${thread.title}`} placeholder="Write a reply..." className="min-h-16 resize-none" subjectMembers={subjectMembers} {...field} />} />
             {postForm.formState.errors.body && <p className="mt-1 text-xs text-destructive">{postForm.formState.errors.body.message}</p>}
           </div>
           <Button type="submit" size="sm" disabled={createPost.isPending}>{createPost.isPending ? "Replying..." : "Reply"}</Button>
@@ -223,10 +227,19 @@ export function ThreadCard({ thread, subjectId, subjectMembers, canEdit, canDele
 
     <Dialog open={editThreadOpen} onOpenChange={setEditThreadOpen}>
       <DialogContent>
-        <DialogHeader><DialogTitle>Edit thread</DialogTitle><DialogDescription>Update the thread title and body.</DialogDescription></DialogHeader>
+        <DialogHeader>
+        <DialogTitle>Edit thread</DialogTitle>
+        <DialogDescription>Update the thread title and body.
+        </DialogDescription>
+        </DialogHeader>
         <form className="flex flex-col gap-4" onSubmit={editThreadForm.handleSubmit((values) => updateThread.mutate({ ...values, attachmentStorageKey: editAttachment?.storageKey ?? null, attachmentFileName: editAttachment?.fileName ?? null, attachmentContentType: editAttachment?.contentType ?? null, attachmentSizeBytes: editAttachment?.sizeBytes ?? null }))}>
-          <div className="flex flex-col gap-2"><Label htmlFor={`edit-thread-title-${thread.id}`}>Title</Label><Input id={`edit-thread-title-${thread.id}`} {...editThreadForm.register("title")} />{editThreadForm.formState.errors.title && <p className="text-sm text-destructive">{editThreadForm.formState.errors.title.message}</p>}</div>
-          <div className="flex flex-col gap-2"><Label htmlFor={`edit-thread-body-${thread.id}`}>Body</Label><Controller control={editThreadForm.control} name="body" defaultValue="" render={({ field }) => <MentionTextarea id={`edit-thread-body-${thread.id}`} subjectMembers={subjectMembers} {...field} />} />{editThreadForm.formState.errors.body && <p className="text-sm text-destructive">{editThreadForm.formState.errors.body.message}</p>}</div>
+          <div className="flex flex-col gap-2"><Label htmlFor={`edit-thread-title-${thread.id}`}>Title</Label>
+          <Input id={`edit-thread-title-${thread.id}`} {...editThreadForm.register("title")} />{editThreadForm.formState.errors.title && <p className="text-sm text-destructive">{editThreadForm.formState.errors.title.message}</p>}
+          </div>
+          <div className="flex flex-col gap-2"><Label htmlFor={`edit-thread-body-${thread.id}`}>Body</Label>
+          <Controller control={editThreadForm.control} name="body" defaultValue="" render={({ field }) => 
+            <MentionTextarea id={`edit-thread-body-${thread.id}`} subjectMembers={subjectMembers} {...field} />} />{editThreadForm.formState.errors.body && <p className="text-sm text-destructive">{editThreadForm.formState.errors.body.message}</p>}
+            </div>
           <div className="flex flex-col gap-2">
             <Label>Attachment</Label>
             <FileUpload
@@ -241,17 +254,24 @@ export function ThreadCard({ thread, subjectId, subjectMembers, canEdit, canDele
               onUploadingChange={setUploadingAttachment}
             />
           </div>
-          <DialogFooter><Button type="submit" disabled={updateThread.isPending || uploadingAttachment}>{updateThread.isPending ? "Saving..." : "Save changes"}</Button></DialogFooter>
+          <DialogFooter>
+            <Button type="submit" disabled={updateThread.isPending || uploadingAttachment}>{updateThread.isPending ? "Saving..." : "Save changes"}</Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
 
     <Dialog open={editingPost !== null} onOpenChange={(open) => !open && setEditingPost(null)}>
       <DialogContent>
-        <DialogHeader><DialogTitle>Edit reply</DialogTitle><DialogDescription>Update your reply.</DialogDescription></DialogHeader>
+        <DialogHeader>
+          <DialogTitle>Edit reply</DialogTitle>
+          <DialogDescription>Update your reply.</DialogDescription>
+        </DialogHeader>
         <form className="flex flex-col gap-4" onSubmit={editPostForm.handleSubmit((values) => editingPost && updatePost.mutate({ postId: editingPost.id, request: values }))}>
           <div className="flex flex-col gap-2"><Label htmlFor={`edit-reply-${editingPost?.id ?? thread.id}`}>Reply</Label><Controller control={editPostForm.control} name="body" defaultValue="" render={({ field }) => <MentionTextarea id={`edit-reply-${editingPost?.id ?? thread.id}`} subjectMembers={subjectMembers} {...field} />} />{editPostForm.formState.errors.body && <p className="text-sm text-destructive">{editPostForm.formState.errors.body.message}</p>}</div>
-          <DialogFooter><Button type="submit" disabled={updatePost.isPending}>{updatePost.isPending ? "Saving..." : "Save changes"}</Button></DialogFooter>
+          <DialogFooter>
+            <Button type="submit" disabled={updatePost.isPending}>{updatePost.isPending ? "Saving..." : "Save changes"}</Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate, useParams } from "react-router-dom"
 import { FileUpload, type FileUploadHandle } from "@/components/layout/FileUpload"
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
+import { ConfirmDeleteDialog } from "@/components/layout/ConfirmDeleteDialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -162,22 +162,41 @@ export default function AssignmentDetailPage({ assignmentIdOverride, embedded = 
         {submission.data && (submission.data.points !== null ? <span className="text-sm text-emerald-700">{submission.data.points} points</span> : <span className="text-sm text-muted-foreground">Not graded</span>)}
           {submission.isLoading && <Skeleton className="h-12 w-full" />}
           <div className="flex flex-col gap-2"><Label htmlFor="submission-text">Written response</Label><Textarea id="submission-text" value={submissionText} onChange={(event) => setSubmissionText(event.target.value)} placeholder="Write your answer or add a note for your professor..." /></div>
-          {visibleSubmittedFiles.length > 0 ? <div className="flex flex-col gap-2"><Label>Submitted files</Label>{visibleSubmittedFiles.map((file) => <div key={file.id} className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 px-3 py-2.5 text-sm"><FileText className="size-4 text-primary" /><span className="min-w-0 flex-1 truncate font-medium" title={file.fileName}>{truncateFileName(file.fileName)}</span><FileDownload file={file} /><Button type="button" variant="ghost" size="icon-sm" aria-label={`Remove ${file.fileName}`} className="text-muted-foreground hover:text-destructive" onClick={() => setRemovedFileIds((current) => [...current, file.id])}><X /></Button></div>)}</div> : null}
+          {visibleSubmittedFiles.length > 0 ? <div className="flex flex-col gap-2">
+            <Label>Submitted files</Label>
+            {visibleSubmittedFiles.map((file) => 
+            <div key={file.id} className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 px-3 py-2.5 text-sm">
+              <FileText className="size-4 text-primary" />
+              <span className="min-w-0 flex-1 truncate font-medium" title={file.fileName}>{truncateFileName(file.fileName)}</span>
+              <FileDownload file={file} />
+              <Button type="button" variant="ghost" size="icon-sm" aria-label={`Remove ${file.fileName}`} className="text-muted-foreground hover:text-destructive" onClick={() => setRemovedFileIds((current) => [...current, file.id])}><X /></Button></div>)}
+              </div>
+            : null}
           <div className="flex flex-col gap-2">
             <Label htmlFor="submission-files">Attachments</Label>
             {submissionFileUpload}
           </div>
         <div className="flex justify-end"><Button disabled={submitAssignment.isPending || (!submissionText.trim() && !hasSelectedFiles && visibleSubmittedFiles.length === 0)} onClick={() => submitAssignment.mutate()}>{submitAssignment.isPending ? "Submitting..." : submission.data ? "Update submission" : "Submit assignment"}</Button></div>
-      </div> : <Card><CardHeader className="flex flex-row items-center justify-between border-b border-border pb-4"><CardTitle>My work</CardTitle>{submission.data && (submission.data.points !== null ? <span className="text-emerald-700">{submission.data.points} points</span> : <span className="text-muted-foreground">Not graded</span>)}</CardHeader><CardContent className="flex flex-col gap-5">
+      </div> : <Card><CardHeader className="flex flex-row items-center justify-between border-b border-border pb-4">
+        <CardTitle>My work</CardTitle>
+        {submission.data && (submission.data.points !== null ? <span className="text-emerald-700">{submission.data.points} points</span> : <span className="text-muted-foreground">Not graded</span>)}
+        </CardHeader>
+        <CardContent className="flex flex-col gap-5">
         {submission.isLoading && <Skeleton className="h-12 w-full" />}
-        <div className="flex flex-col gap-2"><Label htmlFor="submission-text">Written response</Label><Textarea id="submission-text" value={submissionText} onChange={(event) => setSubmissionText(event.target.value)} placeholder="Write your answer or add a note for your professor..." /></div>
-        {visibleSubmittedFiles.length > 0 ? <div className="flex flex-col gap-2"><Label>Submitted files</Label>{visibleSubmittedFiles.map((file) => <div key={file.id} className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 px-3 py-2.5 text-sm"><FileText className="size-4 text-primary" /><span className="min-w-0 flex-1 truncate font-medium" title={file.fileName}>{truncateFileName(file.fileName)}</span><FileDownload file={file} /><Button type="button" variant="ghost" size="icon-sm" aria-label={`Remove ${file.fileName}`} className="text-muted-foreground hover:text-destructive" onClick={() => setRemovedFileIds((current) => [...current, file.id])}><X /></Button></div>)}</div> : null}
+        <div className="flex flex-col gap-2"><Label htmlFor="submission-text">Written response</Label>
+        <Textarea id="submission-text" value={submissionText} onChange={(event) => setSubmissionText(event.target.value)} placeholder="Write your answer or add a note for your professor..." /></div>
+        {visibleSubmittedFiles.length > 0 ? <div className="flex flex-col gap-2"><Label>Submitted files</Label>{visibleSubmittedFiles.map((file) => <div key={file.id} className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 px-3 py-2.5 text-sm">
+        <FileText className="size-4 text-primary" />
+        <span className="min-w-0 flex-1 truncate font-medium" title={file.fileName}>{truncateFileName(file.fileName)}</span>
+        <FileDownload file={file} />
+        <Button type="button" variant="ghost" size="icon-sm" aria-label={`Remove ${file.fileName}`} className="text-muted-foreground hover:text-destructive" onClick={() => setRemovedFileIds((current) => [...current, file.id])}><X /></Button></div>)}</div> : null}
         <div className="flex flex-col gap-2">
           <Label htmlFor="submission-files">Attachments</Label>
           {submissionFileUpload}
         </div>
         <div className="flex justify-end"><Button disabled={submitAssignment.isPending || (!submissionText.trim() && !hasSelectedFiles && visibleSubmittedFiles.length === 0)} onClick={() => submitAssignment.mutate()}>{submitAssignment.isPending ? "Submitting..." : submission.data ? "Update submission" : "Submit assignment"}</Button></div>
-      </CardContent></Card>)}
+        </CardContent>
+      </Card>)}
 
       {canManage && <Card><CardHeader className="flex flex-row items-center justify-between"><CardTitle>Submissions</CardTitle>{currentAssignment.maxPoints == null ? <Button type="button" variant="outline" size="sm" onClick={() => { setMaxPointsDraft(""); setMaxPointsOpen(true) }}>Add max points</Button> : <span className="text-sm text-muted-foreground">Max points: {currentAssignment.maxPoints}</span>}</CardHeader><CardContent>
         {submissions.isLoading && <Skeleton className="h-16 w-full" />}
@@ -192,7 +211,7 @@ export default function AssignmentDetailPage({ assignmentIdOverride, embedded = 
       <ViewSubmissionDialog submission={viewingSubmission} onClose={() => setViewingSubmission(null)} assignmentId={assignmentId} maxPoints={currentAssignment.maxPoints} />
       <Dialog open={maxPointsOpen} onOpenChange={(open) => { setMaxPointsOpen(open); if (!open) setMaxPointsDraft("") }}><DialogContent><DialogHeader><DialogTitle>Add maximum points</DialogTitle><DialogDescription>{currentAssignment.title}</DialogDescription></DialogHeader><div className="flex flex-col gap-2"><Label htmlFor="assignment-maximum-points">Maximum points</Label><Input id="assignment-maximum-points" type="number" min={0.5} step={0.5} value={maxPointsDraft} onChange={(event) => setMaxPointsDraft(event.target.value)} placeholder="Enter maximum points" /></div><DialogFooter><Button type="button" variant="outline" onClick={() => setMaxPointsOpen(false)}>Cancel</Button><Button type="button" disabled={!Number.isFinite(Number(maxPointsDraft)) || Number(maxPointsDraft) <= 0 || maxPointsMutation.isPending} onClick={() => maxPointsMutation.mutate(Number(maxPointsDraft))}>Save</Button></DialogFooter></DialogContent></Dialog>
       <Dialog open={editOpen} onOpenChange={setEditOpen}><DialogContent><DialogHeader><DialogTitle>Edit assignment</DialogTitle><DialogDescription>Update the assignment details.</DialogDescription></DialogHeader><form className="flex flex-col gap-4" onSubmit={form.handleSubmit((values) => editAssignment.mutate(values))}><div className="flex flex-col gap-2"><Label htmlFor="edit-title">Title</Label><Input id="edit-title" {...form.register("title", { required: true })} /></div><div className="flex flex-col gap-2"><Label htmlFor="edit-description">Description</Label><Textarea id="edit-description" {...form.register("description")} /></div><div className="flex flex-col gap-2"><Label htmlFor="edit-due-date">Due date</Label><Input id="edit-due-date" type="datetime-local" {...form.register("dueDate", { required: true })} /></div><DialogFooter><Button type="submit" disabled={editAssignment.isPending}>{editAssignment.isPending ? "Saving..." : "Save changes"}</Button></DialogFooter></form></DialogContent></Dialog>
-      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Delete assignment?</AlertDialogTitle><AlertDialogDescription>This action cannot be undone.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction onClick={() => deleteAssignment.mutate()} disabled={deleteAssignment.isPending}>{deleteAssignment.isPending ? "Deleting..." : "Delete"}</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
+      <ConfirmDeleteDialog open={deleteOpen} onOpenChange={setDeleteOpen} title="Delete assignment?" pending={deleteAssignment.isPending} onConfirm={() => deleteAssignment.mutate()} />
     </div>
   )
 }

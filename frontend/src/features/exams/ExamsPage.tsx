@@ -4,7 +4,7 @@ import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/rea
 import { useParams, useSearchParams } from "react-router-dom"
 import { toast } from "sonner"
 import { TabSectionCard } from "@/components/layout/TabSectionCard"
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
+import { ConfirmDeleteDialog } from "@/components/layout/ConfirmDeleteDialog"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
@@ -230,34 +230,27 @@ export default function ExamsPage({ embedded = false }: { embedded?: boolean }) 
 
       <Dialog open={maxPointsExam !== null} onOpenChange={(open) => { if (!open) { setMaxPointsExam(null); setMaxPointsDraft("") } }}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Add maximum points</DialogTitle><DialogDescription>{maxPointsExam?.name}</DialogDescription></DialogHeader>
+          <DialogHeader>
+            <DialogTitle>Add maximum points</DialogTitle>
+            <DialogDescription>{maxPointsExam?.name}</DialogDescription>
+          </DialogHeader>
           <div className="flex flex-col gap-2"><Label htmlFor="maximum-points">Maximum points</Label><Input id="maximum-points" type="number" min={0.5} step={0.5} value={maxPointsDraft} onChange={(event) => setMaxPointsDraft(event.target.value)} placeholder="Enter maximum points" /></div>
-          <DialogFooter><Button type="button" variant="outline" onClick={() => setMaxPointsExam(null)}>Cancel</Button><Button type="button" disabled={!maxPointsExam || !Number.isFinite(Number(maxPointsDraft)) || Number(maxPointsDraft) <= 0 || maxPointsMutation.isPending} onClick={() => maxPointsExam && maxPointsMutation.mutate({ exam: maxPointsExam, maxPoints: Number(maxPointsDraft) })}>Save</Button></DialogFooter>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setMaxPointsExam(null)}>Cancel</Button><Button type="button" disabled={!maxPointsExam || !Number.isFinite(Number(maxPointsDraft)) || Number(maxPointsDraft) <= 0 || maxPointsMutation.isPending} onClick={() => maxPointsExam && maxPointsMutation.mutate({ exam: maxPointsExam, maxPoints: Number(maxPointsDraft) })}>Save</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
       <ExamGradingDialog exam={gradingExam} onClose={() => setGradingExam(null)} canManageExams={canManageExams} />
 
-      <AlertDialog open={examToDelete !== null} onOpenChange={(open) => !open && setExamToDelete(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete exam?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will permanently delete “{examToDelete?.name}”.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleteMutation.isPending}>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              variant="destructive"
-              disabled={deleteMutation.isPending}
-              onClick={() => examToDelete && deleteMutation.mutate(examToDelete.id)}
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDeleteDialog
+        open={examToDelete !== null}
+        onOpenChange={(open) => !open && setExamToDelete(null)}
+        title="Delete exam?"
+        description={`This will permanently delete "${examToDelete?.name}".`}
+        pending={deleteMutation.isPending}
+        onConfirm={() => examToDelete && deleteMutation.mutate(examToDelete.id)}
+      />
     </div>
   )
 }

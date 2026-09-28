@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { useNavigate, useParams, useSearchParams } from "react-router-dom"
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
+import { ConfirmDeleteDialog } from "@/components/layout/ConfirmDeleteDialog"
 import { Button } from "@/components/ui/button"
 import { TabSectionCard } from "@/components/layout/TabSectionCard"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -135,7 +135,20 @@ export default function SubjectDetailPage() {
     <Dialog open={subjectDialog} onOpenChange={setSubjectDialog}><DialogContent><DialogHeader><DialogTitle>Edit subject</DialogTitle></DialogHeader><SubjectForm initial={currentSubject} onSubmit={(values) => editSubject.mutate(values)} submitting={editSubject.isPending} /></DialogContent></Dialog>
     <Dialog open={materialDialog} onOpenChange={(open) => { setMaterialDialog(open); if (!open) setEditingMaterial(undefined) }}><DialogContent><DialogHeader><DialogTitle>{editingMaterial ? "Edit material" : "Add material"}</DialogTitle></DialogHeader><MaterialForm initial={editingMaterial} subjectId={id} onSubmit={(values) => saveMaterial.mutate(values)} submitting={saveMaterial.isPending} /></DialogContent></Dialog>
     <AddMembersDialog open={memberDialog} onOpenChange={setMemberDialog} subjectId={id} candidates={memberCandidates} />
-    <AlertDialog open={deleteSubjectOpen} onOpenChange={setDeleteSubjectOpen}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Delete subject?</AlertDialogTitle><AlertDialogDescription>This will permanently delete this subject and its associated data.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction variant="destructive" onClick={() => deleteSubject.mutate()}>Delete</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
-    <AlertDialog open={!!deleteMaterial} onOpenChange={(open) => !open && setDeleteMaterial(undefined)}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Delete material?</AlertDialogTitle><AlertDialogDescription>This action cannot be undone.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction variant="destructive" onClick={() => deleteMaterial && removeMaterial.mutate(deleteMaterial)}>Delete</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
+    <ConfirmDeleteDialog
+      open={deleteSubjectOpen}
+      onOpenChange={setDeleteSubjectOpen}
+      title="Delete subject?"
+      description="This will permanently delete this subject and its associated data."
+      pending={deleteSubject.isPending}
+      onConfirm={() => deleteSubject.mutate()}
+    />
+    <ConfirmDeleteDialog
+      open={!!deleteMaterial}
+      onOpenChange={(open) => !open && setDeleteMaterial(undefined)}
+      title="Delete material?"
+      pending={removeMaterial.isPending}
+      onConfirm={() => deleteMaterial && removeMaterial.mutate(deleteMaterial)}
+    />
   </div>
 }

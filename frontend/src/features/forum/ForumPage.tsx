@@ -87,11 +87,18 @@ export default function ForumPage({ embedded = false }: { embedded?: boolean }) 
     <CardContent>
       <form className="flex flex-col gap-3" onSubmit={threadForm.handleSubmit((values) => createThread.mutate(attachment ? { ...values, attachmentStorageKey: attachment.storageKey, attachmentFileName: attachment.fileName, attachmentContentType: attachment.contentType, attachmentSizeBytes: attachment.sizeBytes } : values))}>
         <div className="flex items-start justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-3"><Avatar><AvatarFallback>{getInitials(userName)}</AvatarFallback></Avatar><p className="truncate text-sm font-medium">{userName}</p></div>
+          <div className="flex min-w-0 items-center gap-3">
+            <Avatar><AvatarFallback>{getInitials(userName)}</AvatarFallback></Avatar>
+            <p className="truncate text-sm font-medium">{userName}</p>
+          </div>
           <Button type="button" size="icon-sm" variant="ghost" aria-label="Close new thread composer" disabled={createThread.isPending || uploadingAttachment} onClick={closeComposer}><X /></Button>
         </div>
         <div><Label className="sr-only" htmlFor="forum-title">Subject</Label><Input id="forum-title" placeholder="Subject" {...threadForm.register("title")} />{threadForm.formState.errors.title && <p className="mt-1 text-sm text-destructive">{threadForm.formState.errors.title.message}</p>}</div>
-        <div><Label className="sr-only" htmlFor="forum-body">Body</Label><Controller control={threadForm.control} name="body" defaultValue="" render={({ field }) => <MentionTextarea id="forum-body" className="min-h-24 resize-y" placeholder="Start a conversation..." subjectMembers={subjectMembers.data ?? []} {...field} />} />{threadForm.formState.errors.body && <p className="mt-1 text-sm text-destructive">{threadForm.formState.errors.body.message}</p>}</div>
+        <div><Label className="sr-only" htmlFor="forum-body">Body</Label>
+        <Controller control={threadForm.control} name="body" defaultValue="" 
+        render={({ field }) => <MentionTextarea id="forum-body" className="min-h-24 resize-y" placeholder="Start a conversation..." subjectMembers={subjectMembers.data ?? []} {...field} />} />
+        {threadForm.formState.errors.body && <p className="mt-1 text-sm text-destructive">{threadForm.formState.errors.body.message}</p>}
+        </div>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <FileUpload
             ref={fileUploadRef}
@@ -128,7 +135,12 @@ export default function ForumPage({ embedded = false }: { embedded?: boolean }) 
   </>
 
   return <div className={embedded ? "flex flex-col gap-4" : "flex flex-col gap-6"}>
-    {!embedded && <div className="page-heading"><div className="flex flex-col gap-2"><BackButton /><h1>Forum</h1><p className="text-muted-foreground">Discuss this subject with other members.</p></div><Button disabled={newThreadOpen} onClick={() => setNewThreadOpen(true)}>New thread</Button></div>}
+    {!embedded && <div className="page-heading">
+      <div className="flex flex-col gap-2"><BackButton /><h1>Forum</h1><p className="text-muted-foreground">Discuss this subject with other members.</p>
+      </div>
+      <Button disabled={newThreadOpen} onClick={() => setNewThreadOpen(true)}>New thread</Button>
+      </div>
+    }
     {embedded ? (
       <TabSectionCard title="Forum" action={<Button size="sm" disabled={newThreadOpen} onClick={() => setNewThreadOpen(true)}>New thread</Button>} contentClassName="flex flex-col gap-3">
         {composer}

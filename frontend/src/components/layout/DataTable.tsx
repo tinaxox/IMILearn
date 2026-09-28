@@ -1,4 +1,11 @@
-import { tableFeatures, useTable, type CellContext, type ColumnDef, type RowData, type TableMeta } from "@tanstack/react-table"
+import {
+  tableFeatures,
+  useTable,
+  type CellContext,
+  type ColumnDef,
+  type RowData,
+  type TableMeta,
+} from "@tanstack/react-table"
 import {
   Table,
   TableBody,
@@ -18,7 +25,10 @@ const dataTableFeatures = tableFeatures({
 })
 
 export type DataTableColumnDef<TData extends RowData> = ColumnDef<typeof dataTableFeatures, TData>
-export type DataTableCellContext<TData extends RowData> = CellContext<typeof dataTableFeatures, TData>
+export type DataTableCellContext<TData extends RowData> = CellContext<
+  typeof dataTableFeatures,
+  TData
+>
 
 export interface DataTableProps<TData extends RowData, TMeta = unknown> {
   columns: DataTableColumnDef<TData>[]

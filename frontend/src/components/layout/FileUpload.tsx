@@ -42,29 +42,32 @@ export interface FileUploadProps {
   compactAriaLabel?: string
 }
 
-export const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(function FileUpload({
-  id,
-  uploadUrlEndpoint,
-  variant,
-  multiple = false,
-  deferred = false,
-  disabled = false,
-  value,
-  onChange,
-  onUploadingChange,
-  onSelectionChange,
-  successMessage,
-  showErrorToast = true,
-  showUploading = true,
-  resetInputOnError = true,
-  useContentTypeFallback = true,
-  dropzoneTitle = multiple ? "Choose files to upload" : "Choose a file to upload",
-  dropzoneDescription = multiple ? "You can select multiple files" : "Click to browse your files",
-  emptyContent,
-  selectedIcon = "file",
-  compactTrigger = "icon",
-  compactAriaLabel = "Attach a file",
-}: FileUploadProps, ref) {
+export const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(function FileUpload(
+  {
+    id,
+    uploadUrlEndpoint,
+    variant,
+    multiple = false,
+    deferred = false,
+    disabled = false,
+    value,
+    onChange,
+    onUploadingChange,
+    onSelectionChange,
+    successMessage,
+    showErrorToast = true,
+    showUploading = true,
+    resetInputOnError = true,
+    useContentTypeFallback = true,
+    dropzoneTitle = multiple ? "Choose files to upload" : "Choose a file to upload",
+    dropzoneDescription = multiple ? "You can select multiple files" : "Click to browse your files",
+    emptyContent,
+    selectedIcon = "file",
+    compactTrigger = "icon",
+    compactAriaLabel = "Attach a file",
+  }: FileUploadProps,
+  ref,
+) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
   const [pendingFiles, setPendingFiles] = useState<File[]>([])
@@ -92,13 +95,30 @@ export const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(function
     setUploading(true)
     onUploadingChange?.(true)
     try {
-      const uploaded = await Promise.all(files.map(async (file): Promise<UploadedFile> => {
-        const contentType = useContentTypeFallback ? file.type || "application/octet-stream" : file.type
-        const uploadResponse = await apiClient.post<UploadUrl>(uploadUrlEndpoint, { fileName: file.name, contentType, sizeBytes: file.size })
-        const storageResponse = await fetch(uploadResponse.data.url, { method: "PUT", body: file, headers: { "Content-Type": contentType } })
-        if (!storageResponse.ok) throw new Error(`Upload failed for ${file.name}`)
-        return { storageKey: uploadResponse.data.storageKey, fileName: file.name, contentType, sizeBytes: file.size }
-      }))
+      const uploaded = await Promise.all(
+        files.map(async (file): Promise<UploadedFile> => {
+          const contentType = useContentTypeFallback
+            ? file.type || "application/octet-stream"
+            : file.type
+          const uploadResponse = await apiClient.post<UploadUrl>(uploadUrlEndpoint, {
+            fileName: file.name,
+            contentType,
+            sizeBytes: file.size,
+          })
+          const storageResponse = await fetch(uploadResponse.data.url, {
+            method: "PUT",
+            body: file,
+            headers: { "Content-Type": contentType },
+          })
+          if (!storageResponse.ok) throw new Error(`Upload failed for ${file.name}`)
+          return {
+            storageKey: uploadResponse.data.storageKey,
+            fileName: file.name,
+            contentType,
+            sizeBytes: file.size,
+          }
+        }),
+      )
       if (successMessage) toast.success(successMessage)
       return uploaded
     } catch (error) {
@@ -127,8 +147,7 @@ export const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(function
     try {
       const uploaded = await uploadFiles(files)
       setUploadedFiles(multiple ? [...uploadedFiles, ...uploaded] : uploaded.slice(0, 1))
-    } catch {
-    }
+    } catch {}
   }
 
   const removePendingFile = (index: number) => {
@@ -145,65 +164,119 @@ export const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(function
   }
 
   const filesToDisplay = deferred
-    ? pendingFiles.map((file) => ({ fileName: file.name, key: `${file.name}-${file.lastModified}` }))
+    ? pendingFiles.map((file) => ({
+        fileName: file.name,
+        key: `${file.name}-${file.lastModified}`,
+      }))
     : uploadedFiles.map((file) => ({ fileName: file.fileName, key: file.storageKey }))
 
-  const fileInput = <input
-    ref={inputRef}
-    id={id}
-    className="sr-only"
-    type="file"
-    multiple={multiple}
-    disabled={disabled || uploading}
-    onChange={(event) => void selectFiles(Array.from(event.target.files ?? []))}
-  />
+  const fileInput = (
+    <input
+      ref={inputRef}
+      id={id}
+      className="sr-only"
+      type="file"
+      multiple={multiple}
+      disabled={disabled || uploading}
+      onChange={(event) => void selectFiles(Array.from(event.target.files ?? []))}
+    />
+  )
 
   if (variant === "compact") {
     const attachment = uploadedFiles[0]
     const isButtonTrigger = compactTrigger === "button"
-    return <div className="flex min-w-0 items-center gap-2">
-      {fileInput}
-      <Button
-        type="button"
-        size={isButtonTrigger ? "sm" : "icon-sm"}
-        variant={isButtonTrigger ? "outline" : "ghost"}
-        aria-label={isButtonTrigger ? undefined : compactAriaLabel}
-        disabled={disabled || uploading}
-        onClick={() => inputRef.current?.click()}
-      >
-        <Paperclip />{isButtonTrigger && (attachment ? "Replace" : "Attach file")}
-      </Button>
-      {uploading && <span className={`${isButtonTrigger ? "text-sm" : "text-xs"} text-muted-foreground`}>Uploading…</span>}
-      {!uploading && attachment && <div className={isButtonTrigger
-        ? "flex min-w-0 flex-1 items-center gap-1 rounded-md bg-muted px-2 py-1 text-sm"
-        : "flex min-w-0 items-center gap-1 rounded-md bg-muted px-2 py-1 text-xs"
-      }>
-        {isButtonTrigger ? <FileText className="size-4 shrink-0 text-primary" /> : <Paperclip className="size-3.5 shrink-0 text-primary" />}
-        <span className={isButtonTrigger ? "min-w-0 flex-1 truncate" : "max-w-52 truncate"}>{attachment.fileName}</span>
-        <Button type="button" variant="ghost" size="icon-xs" aria-label={`Remove ${attachment.fileName}`} className="text-muted-foreground hover:text-destructive" onClick={() => removeUploadedFile(0)}><X /></Button>
-      </div>}
-    </div>
+    return (
+      <div className="flex min-w-0 items-center gap-2">
+        {fileInput}
+        <Button
+          type="button"
+          size={isButtonTrigger ? "sm" : "icon-sm"}
+          variant={isButtonTrigger ? "outline" : "ghost"}
+          aria-label={isButtonTrigger ? undefined : compactAriaLabel}
+          disabled={disabled || uploading}
+          onClick={() => inputRef.current?.click()}
+        >
+          <Paperclip />
+          {isButtonTrigger && (attachment ? "Replace" : "Attach file")}
+        </Button>
+        {uploading && (
+          <span className={`${isButtonTrigger ? "text-sm" : "text-xs"} text-muted-foreground`}>
+            Uploading…
+          </span>
+        )}
+        {!uploading && attachment && (
+          <div
+            className={
+              isButtonTrigger
+                ? "flex min-w-0 flex-1 items-center gap-1 rounded-md bg-muted px-2 py-1 text-sm"
+                : "flex min-w-0 items-center gap-1 rounded-md bg-muted px-2 py-1 text-xs"
+            }
+          >
+            {isButtonTrigger ? (
+              <FileText className="size-4 shrink-0 text-primary" />
+            ) : (
+              <Paperclip className="size-3.5 shrink-0 text-primary" />
+            )}
+            <span className={isButtonTrigger ? "min-w-0 flex-1 truncate" : "max-w-52 truncate"}>
+              {attachment.fileName}
+            </span>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              aria-label={`Remove ${attachment.fileName}`}
+              className="text-muted-foreground hover:text-destructive"
+              onClick={() => removeUploadedFile(0)}
+            >
+              <X />
+            </Button>
+          </div>
+        )}
+      </div>
+    )
   }
 
   const SelectedIcon = selectedIcon === "paperclip" ? Paperclip : FileText
-  const renderSelectedFile = (file: { fileName: string; key: string }, index: number) => <div key={`${file.key}-${index}`} className="flex items-center gap-2 rounded-lg bg-muted px-3 py-2 text-sm">
-    <SelectedIcon className="size-4 text-primary" />
-    <span className="min-w-0 flex-1 truncate">{file.fileName}</span>
-    <Button type="button" variant="ghost" size="icon-sm" aria-label={`Remove ${file.fileName}`} className="text-muted-foreground hover:text-destructive" onClick={() => deferred ? removePendingFile(index) : removeUploadedFile(index)}><X /></Button>
-  </div>
+  const renderSelectedFile = (file: { fileName: string; key: string }, index: number) => (
+    <div
+      key={`${file.key}-${index}`}
+      className="flex items-center gap-2 rounded-lg bg-muted px-3 py-2 text-sm"
+    >
+      <SelectedIcon className="size-4 text-primary" />
+      <span className="min-w-0 flex-1 truncate">{file.fileName}</span>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-sm"
+        aria-label={`Remove ${file.fileName}`}
+        className="text-muted-foreground hover:text-destructive"
+        onClick={() => (deferred ? removePendingFile(index) : removeUploadedFile(index))}
+      >
+        <X />
+      </Button>
+    </div>
+  )
 
-  return <>
-    <label htmlFor={id} className="flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-[#bfc8dc] bg-[#fafbff] px-5 py-6 text-center transition-colors hover:border-primary hover:bg-accent/50">
-      <Upload className="mb-2 size-5 text-primary" />
-      <span className="text-sm font-medium">{dropzoneTitle}</span>
-      <span className="mt-1 text-xs text-muted-foreground">{dropzoneDescription}</span>
-    </label>
-    {fileInput}
-    {uploading && showUploading && <p className="text-sm text-muted-foreground">Uploading…</p>}
-    {(!uploading || !showUploading) && filesToDisplay.length > 0 && (multiple
-      ? <div className="flex flex-col gap-2">{filesToDisplay.map(renderSelectedFile)}</div>
-      : renderSelectedFile(filesToDisplay[0], 0)
-    )}
-    {(!uploading || !showUploading) && filesToDisplay.length === 0 && emptyContent}
-  </>
+  return (
+    <>
+      <label
+        htmlFor={id}
+        className="flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-[#bfc8dc] bg-[#fafbff] px-5 py-6 text-center transition-colors hover:border-primary hover:bg-accent/50"
+      >
+        <Upload className="mb-2 size-5 text-primary" />
+        <span className="text-sm font-medium">{dropzoneTitle}</span>
+        <span className="mt-1 text-xs text-muted-foreground">{dropzoneDescription}</span>
+      </label>
+      {fileInput}
+      {uploading && showUploading && <p className="text-sm text-muted-foreground">Uploading…</p>}
+      {(!uploading || !showUploading) &&
+        filesToDisplay.length > 0 &&
+        (multiple ? (
+          <div className="flex flex-col gap-2">{filesToDisplay.map(renderSelectedFile)}</div>
+        ) : (
+          renderSelectedFile(filesToDisplay[0], 0)
+        ))}
+      {(!uploading || !showUploading) && filesToDisplay.length === 0 && emptyContent}
+    </>
+  )
 })

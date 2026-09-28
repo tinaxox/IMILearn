@@ -10,5 +10,7 @@ const yearColors: Record<number, string> = {
 }
 
 export function YearBadge({ year, className }: { year: number; className?: string }) {
-  return <span className={cn(yearColors[year] ?? "text-muted-foreground", className)}>Year {year}</span>
+  return (
+    <span className={cn(yearColors[year] ?? "text-muted-foreground", className)}>Year {year}</span>
+  )
 }

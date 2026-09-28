@@ -14,13 +14,25 @@ interface AssignmentRowProps {
   onDeleted: () => void
 }
 
-export function AssignmentRow({ assignment, expanded, isStudent, onToggle, onDeleted }: AssignmentRowProps) {
+export function AssignmentRow({
+  assignment,
+  expanded,
+  isStudent,
+  onToggle,
+  onDeleted,
+}: AssignmentRowProps) {
   const submission = useQuery({
     queryKey: ["assignment-submission", String(assignment.id)],
     enabled: isStudent,
     queryFn: async () => {
-      try { return (await apiClient.get<AssignmentSubmission>(`/assignments/${assignment.id}/submission`)).data }
-      catch (error) { if (axiosStatus(error) === 404) return null; throw error }
+      try {
+        return (
+          await apiClient.get<AssignmentSubmission>(`/assignments/${assignment.id}/submission`)
+        ).data
+      } catch (error) {
+        if (axiosStatus(error) === 404) return null
+        throw error
+      }
     },
   })
 
@@ -31,14 +43,43 @@ export function AssignmentRow({ assignment, expanded, isStudent, onToggle, onDel
           <h3 className="text-base font-semibold">{assignment.title}</h3>
           <p className="mt-1 text-sm text-muted-foreground">
             Due {formatDateTime(assignment.dueDate)}
-            {isStudent && <> · {submission.isLoading ? "Checking status..." : submission.isError ? "Status unavailable" : submission.data ? "Submitted" : "Not handed in"}</>}
+            {isStudent && (
+              <>
+                {" "}
+                ·{" "}
+                {submission.isLoading
+                  ? "Checking status..."
+                  : submission.isError
+                    ? "Status unavailable"
+                    : submission.data
+                      ? "Submitted"
+                      : "Not handed in"}
+              </>
+            )}
           </p>
         </div>
         <Button className="self-start sm:self-auto" size="sm" variant="outline" onClick={onToggle}>
-          {expanded ? <>Close <ChevronUp /></> : <>View assignment <ChevronDown /></>}
+          {expanded ? (
+            <>
+              Close <ChevronUp />
+            </>
+          ) : (
+            <>
+              View assignment <ChevronDown />
+            </>
+          )}
         </Button>
       </div>
-      {expanded && <div className="assignment-expanded mt-4"><AssignmentDetailPage key={assignment.id} assignmentIdOverride={assignment.id} embedded onDeleted={onDeleted} /></div>}
+      {expanded && (
+        <div className="assignment-expanded mt-4">
+          <AssignmentDetailPage
+            key={assignment.id}
+            assignmentIdOverride={assignment.id}
+            embedded
+            onDeleted={onDeleted}
+          />
+        </div>
+      )}
     </div>
   )
 }

@@ -35,16 +35,19 @@ export default function QuizTakePage() {
 
   const reviewedSubmission = useQuery({
     queryKey: ["quiz-submission", submissionId],
-    queryFn: async () => (await apiClient.get<QuizSubmission>(`/quizzes/submissions/${submissionId}`)).data,
+    queryFn: async () =>
+      (await apiClient.get<QuizSubmission>(`/quizzes/submissions/${submissionId}`)).data,
     enabled: isReviewMode,
   })
 
   const submit = useMutation({
-    mutationFn: async (body: SubmitQuizRequest) => (await apiClient.post<QuizSubmitResult>(`/quizzes/${id}/submit`, body)).data,
+    mutationFn: async (body: SubmitQuizRequest) =>
+      (await apiClient.post<QuizSubmitResult>(`/quizzes/${id}/submit`, body)).data,
     onSuccess: setResult,
   })
 
-  if (quiz.isLoading || (isReviewMode && reviewedSubmission.isLoading)) return <p className="text-muted-foreground">Loading quiz...</p>
+  if (quiz.isLoading || (isReviewMode && reviewedSubmission.isLoading))
+    return <p className="text-muted-foreground">Loading quiz...</p>
   if (!quiz.data) return <p className="text-muted-foreground">Quiz not found.</p>
   if (isReviewMode && (!reviewedSubmission.data || reviewedSubmission.data.quizId !== id)) {
     return <p className="text-muted-foreground">Quiz attempt not found.</p>
@@ -74,8 +77,17 @@ export default function QuizTakePage() {
           <p>{currentQuiz.questions.length} questions</p>
           {!displayedResult && (
             <div className="mt-4 flex max-w-xl items-center gap-3">
-              <Progress value={currentQuiz.questions.length ? (answeredCount / currentQuiz.questions.length) * 100 : 0} className="flex-1" />
-              <span className="text-sm text-muted-foreground">{answeredCount} of {currentQuiz.questions.length} answered</span>
+              <Progress
+                value={
+                  currentQuiz.questions.length
+                    ? (answeredCount / currentQuiz.questions.length) * 100
+                    : 0
+                }
+                className="flex-1"
+              />
+              <span className="text-sm text-muted-foreground">
+                {answeredCount} of {currentQuiz.questions.length} answered
+              </span>
             </div>
           )}
         </div>
@@ -85,8 +97,13 @@ export default function QuizTakePage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between gap-4">
             <div>
-              <CardTitle>Results: {displayedResult.correctCount}/{displayedResult.totalQuestions} ({displayedResult.score}%)</CardTitle>
-              <p className="mt-1 text-sm text-muted-foreground">Points: {displayedResult.correctCount} / {displayedResult.totalQuestions}</p>
+              <CardTitle>
+                Results: {displayedResult.correctCount}/{displayedResult.totalQuestions} (
+                {displayedResult.score}%)
+              </CardTitle>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Points: {displayedResult.correctCount} / {displayedResult.totalQuestions}
+              </p>
             </div>
             <Button onClick={startAgain}>Start again</Button>
           </CardHeader>
@@ -96,27 +113,53 @@ export default function QuizTakePage() {
               return (
                 <div key={entry.questionIndex} className="rounded-xl border p-4">
                   <div className="flex items-start justify-between gap-3">
-                    <p className="font-medium">{entry.questionIndex + 1}. {question?.text ?? `Question ${entry.questionIndex + 1}`}</p>
+                    <p className="font-medium">
+                      {entry.questionIndex + 1}.{" "}
+                      {question?.text ?? `Question ${entry.questionIndex + 1}`}
+                    </p>
                     <span className={entry.correct ? "text-emerald-700" : "text-red-700"}>
                       {entry.correct ? "1 point" : "0 points"}
                     </span>
                   </div>
                   {question && (
-                    <RadioGroup className="mt-3" value={entry.submittedOptionIndex === null ? "" : String(entry.submittedOptionIndex)} disabled>
+                    <RadioGroup
+                      className="mt-3"
+                      value={
+                        entry.submittedOptionIndex === null
+                          ? ""
+                          : String(entry.submittedOptionIndex)
+                      }
+                      disabled
+                    >
                       {question.options.map((option) => {
                         const isCorrectAnswer = option.index === entry.correctOptionIndex
                         const isSubmittedAnswer = option.index === entry.submittedOptionIndex
                         const optionId = `result-q${entry.questionIndex}-o${option.index}`
                         return (
-                          <div key={optionId} className={`flex items-center gap-2 rounded-lg border px-3 py-2 ${isCorrectAnswer ? "border-emerald-300 bg-emerald-50" : isSubmittedAnswer ? "border-red-300 bg-red-50" : "border-transparent"}`}>
+                          <div
+                            key={optionId}
+                            className={`flex items-center gap-2 rounded-lg border px-3 py-2 ${isCorrectAnswer ? "border-emerald-300 bg-emerald-50" : isSubmittedAnswer ? "border-red-300 bg-red-50" : "border-transparent"}`}
+                          >
                             <RadioGroupItem value={String(option.index)} id={optionId} />
-                            <Label htmlFor={optionId} className="flex-1">{option.label}</Label>
-                            {isCorrectAnswer && <span className="text-xs font-medium text-emerald-700">Correct answer</span>}
-                            {isSubmittedAnswer && !isCorrectAnswer && <span className="text-xs font-medium text-red-700">Your answer</span>}
+                            <Label htmlFor={optionId} className="flex-1">
+                              {option.label}
+                            </Label>
+                            {isCorrectAnswer && (
+                              <span className="text-xs font-medium text-emerald-700">
+                                Correct answer
+                              </span>
+                            )}
+                            {isSubmittedAnswer && !isCorrectAnswer && (
+                              <span className="text-xs font-medium text-red-700">Your answer</span>
+                            )}
                           </div>
                         )
                       })}
-                      {entry.submittedOptionIndex === null && <p className="text-sm text-muted-foreground">Your answer: {optionLabel(question, null)}</p>}
+                      {entry.submittedOptionIndex === null && (
+                        <p className="text-sm text-muted-foreground">
+                          Your answer: {optionLabel(question, null)}
+                        </p>
+                      )}
                     </RadioGroup>
                   )}
                 </div>
@@ -136,7 +179,9 @@ export default function QuizTakePage() {
                 </CardHeader>
                 <CardContent>
                   <RadioGroup
-                    value={answers[questionIndex] !== undefined ? String(answers[questionIndex]) : ""}
+                    value={
+                      answers[questionIndex] !== undefined ? String(answers[questionIndex]) : ""
+                    }
                     onValueChange={(value) =>
                       setAnswers((old) => ({ ...old, [questionIndex]: Number(value) }))
                     }

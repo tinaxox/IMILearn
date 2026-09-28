@@ -8,7 +8,11 @@ test("professor can enter points for multiple students", async ({ page }) => {
   const inputs = page.getByPlaceholder("Enter points")
   await inputs.nth(0).fill("25")
   await inputs.nth(1).fill("20")
-  const requests = Promise.all([3, 4].map(id => page.waitForRequest(request => request.url().endsWith(`/api/exams/9/grades/${id}`))))
+  const requests = Promise.all(
+    [3, 4].map((id) =>
+      page.waitForRequest((request) => request.url().endsWith(`/api/exams/9/grades/${id}`)),
+    ),
+  )
   await page.getByRole("button", { name: "Save" }).click()
   await requests
 })

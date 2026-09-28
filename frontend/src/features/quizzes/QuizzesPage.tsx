@@ -5,7 +5,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { DataTable, type DataTableColumnDef } from "@/components/layout/DataTable"
 import { apiClient } from "@/lib/api-client"
 import { formatDateTime } from "@/lib/utils"
@@ -23,7 +29,9 @@ const statusClasses: Record<QuizGenerationStatus["status"], string> = {
 export default function QuizzesPage() {
   const { subjectId } = useParams()
   const [searchParams, setSearchParams] = useSearchParams()
-  const [selectedSubjectId, setSelectedSubjectId] = useState(searchParams.get("subject") ?? subjectId ?? "")
+  const [selectedSubjectId, setSelectedSubjectId] = useState(
+    searchParams.get("subject") ?? subjectId ?? "",
+  )
   const numericSubjectId = Number(selectedSubjectId)
   const hasSubject = Number.isInteger(numericSubjectId) && numericSubjectId > 0
   const queryClient = useQueryClient()
@@ -39,7 +47,11 @@ export default function QuizzesPage() {
   const quizzes = useQuery({
     queryKey: ["quizzes", "subject", numericSubjectId],
     queryFn: async () =>
-      (await apiClient.get<Page<Quiz>>(`/quizzes`, { params: { subject: numericSubjectId, size: 100 } })).data.content,
+      (
+        await apiClient.get<Page<Quiz>>(`/quizzes`, {
+          params: { subject: numericSubjectId, size: 100 },
+        })
+      ).data.content,
     enabled: hasSubject,
     refetchInterval: 5000,
   })
@@ -59,19 +71,45 @@ export default function QuizzesPage() {
   const inFlightRequests = (generationRequests.data ?? []).filter(
     (request) => request.subjectId === numericSubjectId && request.status !== "SUCCESS",
   )
-  const latestSubmissionByQuiz = (submissions.data ?? []).reduce<Map<number, QuizSubmission>>((latest, submission) => {
-    const previous = latest.get(submission.quizId)
-    if (!previous || new Date(submission.createdAt).getTime() > new Date(previous.createdAt).getTime()) {
-      latest.set(submission.quizId, submission)
-    }
-    return latest
-  }, new Map())
+  const latestSubmissionByQuiz = (submissions.data ?? []).reduce<Map<number, QuizSubmission>>(
+    (latest, submission) => {
+      const previous = latest.get(submission.quizId)
+      if (
+        !previous ||
+        new Date(submission.createdAt).getTime() > new Date(previous.createdAt).getTime()
+      ) {
+        latest.set(submission.quizId, submission)
+      }
+      return latest
+    },
+    new Map(),
+  )
   const columns: DataTableColumnDef<Quiz>[] = [
     { accessorKey: "title", header: "Name", meta: { cellClassName: "font-medium" } },
-    { accessorKey: "createdAt", header: "Date", cell: ({ row }) => formatDateTime(row.original.createdAt) },
+    {
+      accessorKey: "createdAt",
+      header: "Date",
+      cell: ({ row }) => formatDateTime(row.original.createdAt),
+    },
     { id: "questions", header: "Questions", cell: ({ row }) => row.original.questions.length },
-    { id: "lastTaken", header: "Last taken", cell: ({ row }) => { const latestSubmission = latestSubmissionByQuiz.get(row.original.id); return latestSubmission ? formatDateTime(latestSubmission.createdAt) : "-" } },
-    { id: "actions", header: "Actions", meta: { headerClassName: "text-right", cellClassName: "text-right" }, cell: ({ row }) => <Button variant="outline" render={<Link to={`/quizzes/${row.original.id}/take`} />}>Take quiz</Button> },
+    {
+      id: "lastTaken",
+      header: "Last taken",
+      cell: ({ row }) => {
+        const latestSubmission = latestSubmissionByQuiz.get(row.original.id)
+        return latestSubmission ? formatDateTime(latestSubmission.createdAt) : "-"
+      },
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      meta: { headerClassName: "text-right", cellClassName: "text-right" },
+      cell: ({ row }) => (
+        <Button variant="outline" render={<Link to={`/quizzes/${row.original.id}/take`} />}>
+          Take quiz
+        </Button>
+      ),
+    },
   ]
 
   const invalidateAll = () => {
@@ -87,8 +125,12 @@ export default function QuizzesPage() {
           <p>Select a subject, create a quiz, or generate one from its materials.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" disabled={!hasSubject} onClick={() => setGenerateOpen(true)}>Generate with AI</Button>
-          <Button disabled={!hasSubject} onClick={() => setCreateOpen(true)}>Create quiz</Button>
+          <Button variant="outline" disabled={!hasSubject} onClick={() => setGenerateOpen(true)}>
+            Generate with AI
+          </Button>
+          <Button disabled={!hasSubject} onClick={() => setCreateOpen(true)}>
+            Create quiz
+          </Button>
         </div>
       </div>
 
@@ -99,34 +141,59 @@ export default function QuizzesPage() {
             value={selectedSubjectId}
             onValueChange={(value) => {
               setSelectedSubjectId(value ?? "")
-              setSearchParams((params) => { if (value) params.set("subject", value); else params.delete("subject"); return params }, { replace: true })
+              setSearchParams(
+                (params) => {
+                  if (value) params.set("subject", value)
+                  else params.delete("subject")
+                  return params
+                },
+                { replace: true },
+              )
             }}
           >
             <SelectTrigger id="quiz-subject" className="w-full max-w-md">
               <SelectValue placeholder="Select a subject">
-                {(value: string | null) => subjects.data?.find((subject) => String(subject.id) === value)?.name ?? "Select a subject"}
+                {(value: string | null) =>
+                  subjects.data?.find((subject) => String(subject.id) === value)?.name ??
+                  "Select a subject"
+                }
               </SelectValue>
             </SelectTrigger>
-            <SelectContent label="Subject">{subjects.data?.map((subject) => <SelectItem key={subject.id} value={String(subject.id)}>{subject.name}</SelectItem>)}</SelectContent>
+            <SelectContent label="Subject">
+              {subjects.data?.map((subject) => (
+                <SelectItem key={subject.id} value={String(subject.id)}>
+                  {subject.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
           </Select>
         </CardContent>
       </Card>
 
       {inFlightRequests.length > 0 && (
         <Card>
-          <CardHeader><CardTitle>Generation requests</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle>Generation requests</CardTitle>
+          </CardHeader>
           <CardContent className="flex flex-col gap-3">
             {inFlightRequests.map((request) => (
-              <div key={request.id} className="flex flex-col gap-2 rounded-xl border border-dashed p-3">
+              <div
+                key={request.id}
+                className="flex flex-col gap-2 rounded-xl border border-dashed p-3"
+              >
                 <div className="flex items-center justify-between gap-3">
                   <span className="font-medium text-muted-foreground">{request.title}</span>
                   <span className={statusClasses[request.status]}>{request.status}</span>
                 </div>
-                {request.errorMessage && <p className="text-sm text-destructive">{request.errorMessage}</p>}
+                {request.errorMessage && (
+                  <p className="text-sm text-destructive">{request.errorMessage}</p>
+                )}
                 <Progress
                   value={
                     request.materialSteps.length
-                      ? (request.materialSteps.filter((s) => s.status === "SUCCESS").length / request.materialSteps.length) * 100
+                      ? (request.materialSteps.filter((s) => s.status === "SUCCESS").length /
+                          request.materialSteps.length) *
+                        100
                       : 0
                   }
                 />
@@ -137,21 +204,44 @@ export default function QuizzesPage() {
       )}
 
       <Card>
-        <CardHeader><CardTitle>Available quizzes</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle>Available quizzes</CardTitle>
+        </CardHeader>
         <CardContent className="flex flex-col gap-2">
-          {!hasSubject && <p className="py-5 text-sm text-muted-foreground">Select a subject to see its quizzes and materials.</p>}
+          {!hasSubject && (
+            <p className="py-5 text-sm text-muted-foreground">
+              Select a subject to see its quizzes and materials.
+            </p>
+          )}
           {quizzes.isLoading && <p className="text-sm text-muted-foreground">Loading quizzes...</p>}
           {quizzes.data?.length === 0 && !quizzes.isLoading && (
-            <p className="text-sm text-muted-foreground">No quizzes yet — create one or generate one from materials.</p>
+            <p className="text-sm text-muted-foreground">
+              No quizzes yet — create one or generate one from materials.
+            </p>
           )}
           {quizzes.data && quizzes.data.length > 0 && (
-            <DataTable data={quizzes.data} columns={columns} containerClassName="max-h-[23.5rem] overflow-y-auto" getRowClassName={() => "hover:bg-transparent"} />
+            <DataTable
+              data={quizzes.data}
+              columns={columns}
+              containerClassName="max-h-[23.5rem] overflow-y-auto"
+              getRowClassName={() => "hover:bg-transparent"}
+            />
           )}
         </CardContent>
       </Card>
 
-      <CreateQuizDialog open={createOpen} onOpenChange={setCreateOpen} subjectId={numericSubjectId} onCreated={invalidateAll} />
-      <GenerateQuizDialog open={generateOpen} onOpenChange={setGenerateOpen} subjectId={numericSubjectId} onGenerated={invalidateAll} />
+      <CreateQuizDialog
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+        subjectId={numericSubjectId}
+        onCreated={invalidateAll}
+      />
+      <GenerateQuizDialog
+        open={generateOpen}
+        onOpenChange={setGenerateOpen}
+        subjectId={numericSubjectId}
+        onGenerated={invalidateAll}
+      />
     </div>
   )
 }

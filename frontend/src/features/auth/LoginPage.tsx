@@ -35,7 +35,9 @@ export default function LoginPage() {
     <div className="flex h-full items-center justify-center overflow-y-auto bg-background p-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="items-center text-center">
-          <span className="mx-auto mb-2 flex size-12 items-center justify-center justify-self-center text-primary"><GraduationCap className="size-10" strokeWidth={2.2} /></span>
+          <span className="mx-auto mb-2 flex size-12 items-center justify-center justify-self-center text-primary">
+            <GraduationCap className="size-10" strokeWidth={2.2} />
+          </span>
           <CardTitle className="text-xl">Welcome back</CardTitle>
           <CardDescription>Sign in to your IMILearn account</CardDescription>
         </CardHeader>

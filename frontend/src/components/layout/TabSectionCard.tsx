@@ -9,11 +9,13 @@ export interface TabSectionCardProps {
 }
 
 export function TabSectionCard({ title, action, contentClassName, children }: TabSectionCardProps) {
-  return <Card>
-    <CardHeader className="flex flex-row items-center justify-between">
-      <CardTitle>{title}</CardTitle>
-      {action}
-    </CardHeader>
-    <CardContent className={contentClassName}>{children}</CardContent>
-  </Card>
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle>{title}</CardTitle>
+        {action}
+      </CardHeader>
+      <CardContent className={contentClassName}>{children}</CardContent>
+    </Card>
+  )
 }

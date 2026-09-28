@@ -8,19 +8,24 @@ const subscriptions = new Map<string, StompSubscription>()
 
 function subscribeConnected(destination: string) {
   if (!client?.connected || subscriptions.has(destination)) return
-  subscriptions.set(destination, client.subscribe(destination, (message: IMessage) => {
-    try {
-      const payload = JSON.parse(message.body) as unknown
-      listeners.get(destination)?.forEach((listener) => listener(payload))
-    } catch {
-    }
-  }))
+  subscriptions.set(
+    destination,
+    client.subscribe(destination, (message: IMessage) => {
+      try {
+        const payload = JSON.parse(message.body) as unknown
+        listeners.get(destination)?.forEach((listener) => listener(payload))
+      } catch {}
+    }),
+  )
 }
 
 export function getStompClient(): Client {
   if (client) return client
   client = new Client({
-    webSocketFactory: () => new SockJS(`/ws?token=${encodeURIComponent(getStoredAuth()?.token ?? "")}`, null, { transports: ["websocket"] }),
+    webSocketFactory: () =>
+      new SockJS(`/ws?token=${encodeURIComponent(getStoredAuth()?.token ?? "")}`, null, {
+        transports: ["websocket"],
+      }),
     reconnectDelay: 5000,
     beforeConnect: (activeClient) => {
       activeClient.connectHeaders = { Authorization: `Bearer ${getStoredAuth()?.token ?? ""}` }
@@ -33,7 +38,10 @@ export function getStompClient(): Client {
   return client
 }
 
-export function subscribeToTopic(destination: string, onMessage: (payload: unknown) => void): () => void {
+export function subscribeToTopic(
+  destination: string,
+  onMessage: (payload: unknown) => void,
+): () => void {
   getStompClient()
 
   const topicListeners = listeners.get(destination) ?? new Set<(payload: unknown) => void>()

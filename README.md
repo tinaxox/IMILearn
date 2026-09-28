@@ -9,7 +9,7 @@ Postoje 3 role - ADMIN, STUDENT, PROFESOR.
 2. cd frontend
 3. npm install
 4. cd ..
-5. ./start.sh
+5. ./start.sh (gitbash)
 - Frontend: http://localhost:5173
 - Backend:  http://localhost:8080
 

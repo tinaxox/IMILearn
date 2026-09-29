@@ -6,6 +6,7 @@ import {
   type RowData,
   type TableMeta,
 } from "@tanstack/react-table"
+import { cn } from "@/lib/utils"
 import {
   Table,
   TableBody,
@@ -34,6 +35,7 @@ export interface DataTableProps<TData extends RowData, TMeta = unknown> {
   columns: DataTableColumnDef<TData>[]
   data: TData[]
   containerClassName?: string
+  cellClassName?: string
   getRowClassName?: (row: TData) => string | undefined
   meta?: TMeta
 }
@@ -42,6 +44,7 @@ export function DataTable<TData extends RowData, TMeta = unknown>({
   columns,
   data,
   containerClassName,
+  cellClassName,
   getRowClassName,
   meta,
 }: DataTableProps<TData, TMeta>) {
@@ -69,7 +72,10 @@ export function DataTable<TData extends RowData, TMeta = unknown>({
         {table.getRowModel().rows.map((row) => (
           <TableRow key={row.id} className={getRowClassName?.(row.original)}>
             {row.getAllCells().map((cell) => (
-              <TableCell key={cell.id} className={cell.column.columnDef.meta?.cellClassName}>
+              <TableCell
+                key={cell.id}
+                className={cn(cellClassName, cell.column.columnDef.meta?.cellClassName)}
+              >
                 <table.FlexRender cell={cell} />
               </TableCell>
             ))}

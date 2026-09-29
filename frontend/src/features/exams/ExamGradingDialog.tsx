@@ -1,4 +1,4 @@
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react"
+import { useEffect, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
@@ -9,76 +9,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
-import {
-  DataTable,
-  type DataTableCellContext,
-  type DataTableColumnDef,
-} from "@/components/layout/DataTable"
+import { DataTable } from "@/components/layout/DataTable"
 import { apiClient } from "@/lib/api-client"
+import { examGradingGridColumns, type GradingMeta } from "@/features/exams/examGradingGridColumns"
 import type { Exam, ExamGrade } from "@/types/api"
 
 interface ExamGradingDialogProps {
   exam: Exam | null
   onClose: () => void
   canManageExams: boolean
-}
-
-interface GradingMeta {
-  gradeDrafts: Record<number, string>
-  finalPointDrafts: Record<number, string>
-  setGradeDrafts: Dispatch<SetStateAction<Record<number, string>>>
-  setFinalPointDrafts: Dispatch<SetStateAction<Record<number, string>>>
-  isFinal: boolean
-  maxPoints: number | null | undefined
-}
-
-function IndexYearCell({ row }: DataTableCellContext<ExamGrade>) {
-  return (
-    <>
-      {row.original.studentIndex || "-"} / {row.original.studentYear ?? "-"}
-    </>
-  )
-}
-
-function PointsCell({ row, table }: DataTableCellContext<ExamGrade>) {
-  const { gradeDrafts, finalPointDrafts, setGradeDrafts, setFinalPointDrafts, isFinal, maxPoints } =
-    table.options.meta as unknown as GradingMeta
-  const studentId = row.original.studentId
-  const drafts = isFinal ? finalPointDrafts : gradeDrafts
-  const setDrafts = isFinal ? setFinalPointDrafts : setGradeDrafts
-  return (
-    <Input
-      type="number"
-      min={0}
-      max={maxPoints ?? undefined}
-      step={0.5}
-      value={drafts[studentId] ?? ""}
-      onChange={(event) =>
-        setDrafts((current) => ({ ...current, [studentId]: event.target.value }))
-      }
-      placeholder="Enter points"
-    />
-  )
-}
-
-function GradeCell({ row, table }: DataTableCellContext<ExamGrade>) {
-  const { gradeDrafts, setGradeDrafts } = table.options.meta as unknown as GradingMeta
-  const studentId = row.original.studentId
-  return (
-    <Input
-      type="number"
-      min={5}
-      max={10}
-      step={1}
-      value={gradeDrafts[studentId] ?? ""}
-      onChange={(event) =>
-        setGradeDrafts((current) => ({ ...current, [studentId]: event.target.value }))
-      }
-      placeholder="5–10"
-    />
-  )
 }
 
 export function ExamGradingDialog({ exam, onClose, canManageExams }: ExamGradingDialogProps) {
@@ -173,32 +113,7 @@ export function ExamGradingDialog({ exam, onClose, canManageExams }: ExamGrading
     maxPoints: exam?.maxPoints,
   }
 
-  const columns: DataTableColumnDef<ExamGrade>[] = [
-    { accessorKey: "studentName", header: "Name", meta: { cellClassName: "font-medium" } },
-    { accessorKey: "studentSurname", header: "Surname" },
-    {
-      id: "indexYear",
-      header: "Index / Year",
-      meta: { cellClassName: "text-muted-foreground" },
-      cell: IndexYearCell,
-    },
-    {
-      id: "points",
-      header: "Points",
-      meta: { headerClassName: "w-40" },
-      cell: PointsCell,
-    },
-    ...(isFinal
-      ? [
-          {
-            id: "grade",
-            header: "Grade",
-            meta: { headerClassName: "w-40" },
-            cell: GradeCell,
-          } satisfies DataTableColumnDef<ExamGrade>,
-        ]
-      : []),
-  ]
+  const columns = examGradingGridColumns(isFinal)
 
   return (
     <Dialog open={exam !== null} onOpenChange={(open) => !open && onClose()}>

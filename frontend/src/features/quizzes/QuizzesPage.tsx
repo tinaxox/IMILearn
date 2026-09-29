@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Link, useParams, useSearchParams } from "react-router-dom"
+import { useParams, useSearchParams } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
@@ -12,12 +12,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { DataTable, type DataTableColumnDef } from "@/components/layout/DataTable"
+import { DataTable } from "@/components/layout/DataTable"
 import { apiClient } from "@/lib/api-client"
-import { formatDateTime } from "@/lib/utils"
-import type { Page, Quiz, QuizGenerationStatus, QuizSubmission, Subject } from "@/types/api"
+import type {
+  Page,
+  Quiz,
+  QuizAttempt,
+  QuizGenerationStatus,
+  QuizSubmission,
+  Subject,
+} from "@/types/api"
 import { CreateQuizDialog } from "@/features/quizzes/CreateQuizDialog"
 import { GenerateQuizDialog } from "@/features/quizzes/GenerateQuizDialog"
+import { quizzesGridColumns } from "@/features/quizzes/quizzesGridColumns"
 
 const statusClasses: Record<QuizGenerationStatus["status"], string> = {
   PENDING: "text-amber-700",
@@ -61,6 +68,11 @@ export default function QuizzesPage() {
     queryFn: async () => (await apiClient.get<QuizSubmission[]>("/quizzes/submissions/mine")).data,
   })
 
+  const attempts = useQuery({
+    queryKey: ["quiz-attempts", "mine"],
+    queryFn: async () => (await apiClient.get<QuizAttempt[]>("/quizzes/attempts/mine")).data,
+  })
+
   const generationRequests = useQuery({
     queryKey: ["quiz-generation-requests", "mine"],
     queryFn: async () => (await apiClient.get<QuizGenerationStatus[]>("/quizzes/generate")).data,
@@ -84,33 +96,20 @@ export default function QuizzesPage() {
     },
     new Map(),
   )
-  const columns: DataTableColumnDef<Quiz>[] = [
-    { accessorKey: "title", header: "Name", meta: { cellClassName: "font-medium" } },
-    {
-      accessorKey: "createdAt",
-      header: "Date",
-      cell: ({ row }) => formatDateTime(row.original.createdAt),
-    },
-    { id: "questions", header: "Questions", cell: ({ row }) => row.original.questions.length },
-    {
-      id: "lastTaken",
-      header: "Last taken",
-      cell: ({ row }) => {
-        const latestSubmission = latestSubmissionByQuiz.get(row.original.id)
-        return latestSubmission ? formatDateTime(latestSubmission.createdAt) : "-"
-      },
-    },
-    {
-      id: "actions",
-      header: "Actions",
-      meta: { headerClassName: "text-right", cellClassName: "text-right" },
-      cell: ({ row }) => (
-        <Button variant="outline" render={<Link to={`/quizzes/${row.original.id}/take`} />}>
-          Take quiz
-        </Button>
-      ),
-    },
-  ]
+  const inProgressAttemptByQuiz = new Map(
+    (attempts.data ?? []).map((attempt) => [attempt.quizId, attempt]),
+  )
+  const sortedQuizzes = [...(quizzes.data ?? [])].sort((a, b) => {
+    const aLastTaken = latestSubmissionByQuiz.get(a.id)?.createdAt
+    const bLastTaken = latestSubmissionByQuiz.get(b.id)?.createdAt
+    if (aLastTaken && bLastTaken) {
+      return new Date(bLastTaken).getTime() - new Date(aLastTaken).getTime()
+    }
+    if (aLastTaken) return -1
+    if (bLastTaken) return 1
+    return 0
+  })
+  const columns = quizzesGridColumns({ latestSubmissionByQuiz, inProgressAttemptByQuiz })
 
   const invalidateAll = () => {
     queryClient.invalidateQueries({ queryKey: ["quizzes", "subject", numericSubjectId] })
@@ -221,7 +220,7 @@ export default function QuizzesPage() {
           )}
           {quizzes.data && quizzes.data.length > 0 && (
             <DataTable
-              data={quizzes.data}
+              data={sortedQuizzes}
               columns={columns}
               containerClassName="max-h-[23.5rem] overflow-y-auto"
               getRowClassName={() => "hover:bg-transparent"}

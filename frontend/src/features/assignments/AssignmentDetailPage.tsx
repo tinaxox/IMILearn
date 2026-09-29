@@ -17,7 +17,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
-import { DataTable, type DataTableColumnDef } from "@/components/layout/DataTable"
+import { DataTable } from "@/components/layout/DataTable"
+import { submissionsGridColumns } from "@/features/assignments/submissionsGridColumns"
 import { Textarea } from "@/components/ui/textarea"
 import { useAuth } from "@/features/auth/AuthContext"
 import { apiClient } from "@/lib/api-client"
@@ -167,42 +168,9 @@ export default function AssignmentDetailPage({
   const currentAssignment = assignment.data
 
   const isPastDue = new Date(currentAssignment.dueDate).getTime() < Date.now()
-  const submissionColumns: DataTableColumnDef<AssignmentSubmission>[] = [
-    {
-      id: "student",
-      header: "Student",
-      cell: ({ row }) => (
-        <div className="flex flex-col">
-          <span className="font-medium">
-            {row.original.studentName} {row.original.studentSurname}
-          </span>
-          <span className="text-xs text-muted-foreground">
-            {row.original.files.length} file{row.original.files.length === 1 ? "" : "s"}
-          </span>
-        </div>
-      ),
-    },
-    {
-      id: "submission",
-      header: "Submission",
-      cell: ({ row }) => (
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={() => setViewingSubmission(row.original)}
-        >
-          View submission
-        </Button>
-      ),
-    },
-    {
-      accessorKey: "points",
-      header: "Points",
-      meta: { headerClassName: "text-right", cellClassName: "text-right" },
-      cell: ({ row }) => row.original.points ?? "-",
-    },
-  ]
+  const submissionColumns = submissionsGridColumns({
+    onView: (submission) => setViewingSubmission(submission),
+  })
   const submissionFileUpload = (
     <FileUpload
       ref={fileUploadRef}
@@ -243,7 +211,7 @@ export default function AssignmentDetailPage({
       )}
       {embedded ? (
         <div className="flex flex-col gap-4">
-          <p className="whitespace-pre-wrap text-sm leading-6 text-muted-foreground">
+          <p className="whitespace-pre-wrap text-sm text-muted-foreground">
             {currentAssignment.description || "No instructions provided."}
           </p>
         </div>
@@ -253,7 +221,7 @@ export default function AssignmentDetailPage({
             <CardTitle>Description</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="whitespace-pre-wrap text-sm leading-6 text-muted-foreground">
+            <p className="whitespace-pre-wrap text-sm text-muted-foreground">
               {currentAssignment.description || "No description provided."}
             </p>
           </CardContent>

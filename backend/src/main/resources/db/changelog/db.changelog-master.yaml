@@ -55,3 +55,5 @@ databaseChangeLog:
       file: db/changelog/changes/027-add-attachment-to-forum-threads.yaml
   - include:
       file: db/changelog/changes/028-add-max-points-to-assignments.yaml
+  - include:
+      file: db/changelog/changes/029-create-quiz-attempts-table.yaml

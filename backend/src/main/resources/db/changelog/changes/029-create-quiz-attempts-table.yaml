@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: 029-create-quiz-attempts-table
+      author: imilearn
+      changes:
+        - createTable:
+            tableName: quiz_attempts
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: quiz_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_quiz_attempts_quiz
+                    references: quizzes(id)
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_quiz_attempts_user
+                    references: users(id)
+              - column:
+                  name: answers
+                  type: JSONB
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: deleted_at
+                  type: TIMESTAMP WITH TIME ZONE
+        - addUniqueConstraint:
+            tableName: quiz_attempts
+            columnNames: quiz_id, user_id
+            constraintName: uq_quiz_attempts_quiz_user

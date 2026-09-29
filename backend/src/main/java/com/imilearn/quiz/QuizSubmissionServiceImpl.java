@@ -23,6 +23,7 @@ public class QuizSubmissionServiceImpl implements QuizSubmissionService {
     private final QuizRepository quizRepository;
     private final QuizSubmissionRepository quizSubmissionRepository;
     private final QuizSubmissionMapper quizSubmissionMapper;
+    private final QuizAttemptRepository quizAttemptRepository;
 
     @Override
     public QuizSubmissionResponse submit(Long quizId, SubmitQuizRequest request, User currentUser) {
@@ -50,7 +51,9 @@ public class QuizSubmissionServiceImpl implements QuizSubmissionService {
                 .submittedAnswers(submittedOptionIndexes).score(score).correctCount(correctCount).totalQuestions(total)
                 .result(results).build();
 
-        return quizSubmissionMapper.toResponse(quizSubmissionRepository.save(submission));
+        QuizSubmissionResponse response = quizSubmissionMapper.toResponse(quizSubmissionRepository.save(submission));
+        quizAttemptRepository.deleteByQuizIdAndUserId(quizId, currentUser.getId());
+        return response;
     }
 
     @Override

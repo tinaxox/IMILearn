@@ -347,6 +347,16 @@ export interface QuizSubmission {
   createdAt: string
 }
 
+export interface QuizAttempt {
+  quizId: number
+  answers: (number | null)[]
+  updatedAt: string
+}
+
+export interface QuizAttemptRequest {
+  answers: (number | null)[]
+}
+
 export type GenerationStatus = "PENDING" | "RUNNING" | "FAILED" | "SUCCESS"
 
 export interface QuizGenerationRequestBody {

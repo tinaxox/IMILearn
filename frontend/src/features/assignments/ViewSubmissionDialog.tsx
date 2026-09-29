@@ -77,7 +77,7 @@ export function ViewSubmissionDialog({
             <div className="flex flex-col gap-5">
               <div className="flex flex-col gap-2">
                 <Label>Written response</Label>
-                <p className="whitespace-pre-wrap break-words rounded-lg border border-border bg-muted/30 p-3 text-sm leading-6">
+                <p className="whitespace-pre-wrap wrap-break-word rounded-lg border border-border bg-muted/30 p-3 text-sm">
                   {submission.textContent?.trim() || "No written response."}
                 </p>
               </div>

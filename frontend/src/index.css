@@ -141,7 +141,7 @@
   }
 
   .page-heading h1 {
-    @apply text-[1.375rem] leading-tight font-semibold tracking-[-0.02em];
+    @apply text-[1.375rem] font-semibold tracking-[-0.02em];
   }
 
   .page-heading p {

@@ -102,7 +102,7 @@ public class QuizGenerationScheduler {
             return false;
         }
         request.setStatus(GenerationStatus.FAILED);
-        request.setErrorMessage("Question generation failed for material id " + failed.getMaterial().getId());
+        request.setErrorMessage("Question generation failed for material " + failed.getMaterial().getName());
         return true;
     }
 

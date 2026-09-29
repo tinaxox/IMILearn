@@ -30,7 +30,9 @@ export function GenerateQuizDialog({
   onGenerated,
 }: GenerateQuizDialogProps) {
   const [generateTitle, setGenerateTitle] = useState("")
-  const [questionCount, setQuestionCount] = useState(5)
+  const [questionCountInput, setQuestionCountInput] = useState("5")
+  const questionCount = Number(questionCountInput)
+  const isQuestionCountValid = questionCountInput.trim() !== "" && Number.isInteger(questionCount) && questionCount >= 1
   const [selectedMaterials, setSelectedMaterials] = useState<number[]>([])
   const [selectionSubjectId, setSelectionSubjectId] = useState(subjectId)
   if (selectionSubjectId !== subjectId) {
@@ -53,15 +55,15 @@ export function GenerateQuizDialog({
       (await apiClient.post<QuizGenerationStatus>("/quizzes/generate", body)).data,
     onSuccess: () => {
       onGenerated()
-      toast.success("Generation started — it'll appear in this list once it's ready")
+      toast.success("Generation has started, it'll appear in this list once it's ready")
       onOpenChange(false)
       setGenerateTitle("")
-      setQuestionCount(5)
+      setQuestionCountInput("5")
       setSelectedMaterials([])
     },
   })
   const submitGenerate = () => {
-    if (!generateTitle.trim() || selectedMaterials.length === 0 || questionCount < 1) return
+    if (!generateTitle.trim() || selectedMaterials.length === 0 || !isQuestionCountValid) return
     generateQuiz.mutate({
       materialIds: selectedMaterials,
       questionCount,
@@ -94,8 +96,8 @@ export function GenerateQuizDialog({
               id="question-count"
               type="number"
               min={1}
-              value={questionCount}
-              onChange={(e) => setQuestionCount(Number(e.target.value))}
+              value={questionCountInput}
+              onChange={(e) => setQuestionCountInput(e.target.value)}
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -132,7 +134,7 @@ export function GenerateQuizDialog({
             disabled={
               !generateTitle.trim() ||
               selectedMaterials.length === 0 ||
-              questionCount < 1 ||
+              !isQuestionCountValid ||
               generateQuiz.isPending
             }
           >

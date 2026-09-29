@@ -24,22 +24,22 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
-import { DataTable, type DataTableColumnDef } from "@/components/layout/DataTable"
+import { DataTable } from "@/components/layout/DataTable"
 import { useAuth } from "@/features/auth/AuthContext"
 import { apiClient } from "@/lib/api-client"
-import { formatDateTime } from "@/lib/utils"
+import { examTypeLabels } from "@/lib/labels"
 import type { Exam, ExamRequest, Page, StudentExamGrade, Subject } from "@/types/api"
 import { BackButton } from "@/components/layout/BackButton"
 import { ExamGradingDialog } from "@/features/exams/ExamGradingDialog"
+import { examsGridColumns } from "@/features/exams/examsGridColumns"
 
 interface ExamFormValues {
   subjectId: string
   name: string
   date: string
   type: "MIDTERM" | "FINAL" | "OTHER"
+  maxPoints: string
 }
-
-const examTypeLabels = { MIDTERM: "Midterm", FINAL: "Final", OTHER: "Other" } as const
 
 function toDateTimeLocal(date: string) {
   const parsed = new Date(date)
@@ -61,8 +61,6 @@ export default function ExamsPage({ embedded = false }: { embedded?: boolean }) 
   const [editingExam, setEditingExam] = useState<Exam | null>(null)
   const [examToDelete, setExamToDelete] = useState<Exam | null>(null)
   const [gradingExam, setGradingExam] = useState<Exam | null>(null)
-  const [maxPointsExam, setMaxPointsExam] = useState<Exam | null>(null)
-  const [maxPointsDraft, setMaxPointsDraft] = useState("")
   const {
     register,
     control,
@@ -70,7 +68,13 @@ export default function ExamsPage({ embedded = false }: { embedded?: boolean }) 
     reset,
     formState: { errors },
   } = useForm<ExamFormValues>({
-    defaultValues: { subjectId: subjectIdParam ?? "", name: "", date: "", type: "MIDTERM" },
+    defaultValues: {
+      subjectId: subjectIdParam ?? "",
+      name: "",
+      date: "",
+      type: "MIDTERM",
+      maxPoints: "",
+    },
   })
 
   const subjectsQuery = useQuery({
@@ -135,7 +139,7 @@ export default function ExamsPage({ embedded = false }: { embedded?: boolean }) 
       toast.success(editingExam ? "Exam updated." : "Exam created.")
       setFormOpen(false)
       setEditingExam(null)
-      reset({ subjectId: subjectIdParam ?? "", name: "", date: "", type: "MIDTERM" })
+      reset({ subjectId: subjectIdParam ?? "", name: "", date: "", type: "MIDTERM", maxPoints: "" })
     },
   })
 
@@ -148,20 +152,9 @@ export default function ExamsPage({ embedded = false }: { embedded?: boolean }) 
     },
   })
 
-  const maxPointsMutation = useMutation({
-    mutationFn: ({ exam, maxPoints }: { exam: Exam; maxPoints: number }) =>
-      apiClient.put<Exam>(`/exams/${exam.id}/max-points`, { maxPoints }),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["exams"] })
-      setMaxPointsExam(null)
-      setMaxPointsDraft("")
-      toast.success("Maximum points saved.")
-    },
-  })
-
   function openCreateDialog() {
     setEditingExam(null)
-    reset({ subjectId: subjectIdParam ?? "", name: "", date: "", type: "MIDTERM" })
+    reset({ subjectId: subjectIdParam ?? "", name: "", date: "", type: "MIDTERM", maxPoints: "" })
     setFormOpen(true)
   }
 
@@ -172,6 +165,7 @@ export default function ExamsPage({ embedded = false }: { embedded?: boolean }) 
       name: exam.name,
       date: toDateTimeLocal(exam.date),
       type: exam.type,
+      maxPoints: exam.maxPoints != null && exam.maxPoints > 0 ? String(exam.maxPoints) : "",
     })
     setFormOpen(true)
   }
@@ -184,7 +178,7 @@ export default function ExamsPage({ embedded = false }: { embedded?: boolean }) 
         date: new Date(values.date).toISOString(),
         type: values.type,
         maxPoints:
-          editingExam?.maxPoints && editingExam.maxPoints > 0 ? editingExam.maxPoints : null,
+          values.maxPoints && Number(values.maxPoints) > 0 ? Number(values.maxPoints) : null,
         subjectId: isAllExamsPage ? Number(values.subjectId) : subjectId,
       },
     })
@@ -204,119 +198,16 @@ export default function ExamsPage({ embedded = false }: { embedded?: boolean }) 
       Number(a.type === "FINAL") - Number(b.type === "FINAL") ||
       new Date(a.date).getTime() - new Date(b.date).getTime(),
   )
-  const columns: DataTableColumnDef<Exam>[] = [
-    { accessorKey: "name", header: "Name", meta: { cellClassName: "font-medium" } },
-    ...(isAllExamsPage
-      ? [
-          {
-            accessorKey: "subjectName",
-            header: "Subject",
-            meta: { cellClassName: "text-muted-foreground" },
-          } satisfies DataTableColumnDef<Exam>,
-        ]
-      : []),
-    {
-      accessorKey: "type",
-      header: "Type",
-      cell: ({ row }) =>
-        row.original.type && row.original.type !== "OTHER" ? (
-          <span className={row.original.type === "FINAL" ? "text-destructive" : "text-amber-600"}>
-            {examTypeLabels[row.original.type]}
-          </span>
-        ) : (
-          "-"
-        ),
-    },
-    {
-      id: "points",
-      header: "Points",
-      cell: ({ row }) =>
-        canManageExams ? (
-          new Date(row.original.date).getTime() <= Date.now() &&
-          row.original.maxPoints != null &&
-          row.original.maxPoints > 0 ? (
-            <Button variant="outline" size="sm" onClick={() => setGradingExam(row.original)}>
-              View {row.original.type === "FINAL" ? "results" : "points"}
-            </Button>
-          ) : (
-            "-"
-          )
-        ) : user?.type === "STUDENT" ? (
-          studentGradesLoading ? (
-            <Skeleton className="h-5 w-12" />
-          ) : (
-            (studentGradesByExam.get(row.original.id)?.points ?? "-")
-          )
-        ) : (
-          "-"
-        ),
-    },
-    {
-      accessorKey: "maxPoints",
-      header: "Max points",
-      cell: ({ row }) =>
-        canManageExams ? (
-          row.original.maxPoints == null || row.original.maxPoints <= 0 ? (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setMaxPointsExam(row.original)
-                setMaxPointsDraft("")
-              }}
-            >
-              Add max points
-            </Button>
-          ) : (
-            row.original.maxPoints
-          )
-        ) : user?.type === "STUDENT" ? (
-          row.original.maxPoints == null || row.original.maxPoints <= 0 ? (
-            "-"
-          ) : (
-            row.original.maxPoints
-          )
-        ) : (
-          "-"
-        ),
-    },
-    {
-      accessorKey: "date",
-      header: "Date",
-      cell: ({ row }) => (
-        <span
-          className={
-            new Date(row.original.date).getTime() >= Date.now() ? "text-primary" : undefined
-          }
-        >
-          {formatDateTime(row.original.date)}
-        </span>
-      ),
-    },
-    ...(canManageExams
-      ? [
-          {
-            id: "actions",
-            header: "Actions",
-            meta: { headerClassName: "text-right", cellClassName: "text-right" },
-            cell: ({ row }) => (
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" size="sm" onClick={() => openEditDialog(row.original)}>
-                  Edit
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => setExamToDelete(row.original)}
-                >
-                  Delete
-                </Button>
-              </div>
-            ),
-          } satisfies DataTableColumnDef<Exam>,
-        ]
-      : []),
-  ]
+  const columns = examsGridColumns({
+    isAllExamsPage,
+    canManageExams,
+    userType: user?.type,
+    studentGradesLoading,
+    studentGradesByExam,
+    onViewGrading: (exam) => setGradingExam(exam),
+    onEdit: (exam) => openEditDialog(exam),
+    onDelete: (exam) => setExamToDelete(exam),
+  })
 
   return (
     <div className={embedded ? "flex flex-col gap-4" : "flex flex-col gap-6"}>
@@ -330,8 +221,8 @@ export default function ExamsPage({ embedded = false }: { embedded?: boolean }) 
             <p className="text-muted-foreground">
               {isAllExamsPage
                 ? canManageExams
-                  ? "Manage exams for your subjects."
-                  : "View exams for your subjects."
+                  ? "Manage exams across all subjects."
+                  : "View exams across all subjects."
                 : "Exams scheduled for this subject."}
             </p>
           </div>
@@ -445,6 +336,17 @@ export default function ExamsPage({ embedded = false }: { embedded?: boolean }) 
                 )}
               />
             </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="exam-max-points">Maximum points</Label>
+              <Input
+                id="exam-max-points"
+                type="number"
+                min={0.5}
+                step={0.5}
+                {...register("maxPoints")}
+                placeholder="Optional"
+              />
+            </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setFormOpen(false)}>
                 Cancel
@@ -454,55 +356,6 @@ export default function ExamsPage({ embedded = false }: { embedded?: boolean }) 
               </Button>
             </DialogFooter>
           </form>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog
-        open={maxPointsExam !== null}
-        onOpenChange={(open) => {
-          if (!open) {
-            setMaxPointsExam(null)
-            setMaxPointsDraft("")
-          }
-        }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add maximum points</DialogTitle>
-            <DialogDescription>{maxPointsExam?.name}</DialogDescription>
-          </DialogHeader>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="maximum-points">Maximum points</Label>
-            <Input
-              id="maximum-points"
-              type="number"
-              min={0.5}
-              step={0.5}
-              value={maxPointsDraft}
-              onChange={(event) => setMaxPointsDraft(event.target.value)}
-              placeholder="Enter maximum points"
-            />
-          </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setMaxPointsExam(null)}>
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              disabled={
-                !maxPointsExam ||
-                !Number.isFinite(Number(maxPointsDraft)) ||
-                Number(maxPointsDraft) <= 0 ||
-                maxPointsMutation.isPending
-              }
-              onClick={() =>
-                maxPointsExam &&
-                maxPointsMutation.mutate({ exam: maxPointsExam, maxPoints: Number(maxPointsDraft) })
-              }
-            >
-              Save
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
 

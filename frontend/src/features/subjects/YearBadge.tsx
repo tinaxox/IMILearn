@@ -5,8 +5,6 @@ const yearColors: Record<number, string> = {
   2: "text-[#176b45]",
   3: "text-[#85600c]",
   4: "text-[#a52b4a]",
-  5: "text-[#673ab7]",
-  6: "text-[#176a73]",
 }
 
 export function YearBadge({ year, className }: { year: number; className?: string }) {

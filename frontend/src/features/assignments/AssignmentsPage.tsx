@@ -17,13 +17,16 @@ import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Textarea } from "@/components/ui/textarea"
 import { useAuth } from "@/features/auth/AuthContext"
-import { apiClient } from "@/lib/api-client"
+import { apiClient, getErrorMessage } from "@/lib/api-client"
 import type { Assignment, AssignmentRequest, Page } from "@/types/api"
 import { toast } from "sonner"
 import { AssignmentRow } from "@/features/assignments/AssignmentRow"
 import { BackButton } from "@/components/layout/BackButton"
 
-type AssignmentForm = Omit<AssignmentRequest, "subjectId" | "dueDate"> & { dueDate: string }
+type AssignmentForm = Omit<AssignmentRequest, "subjectId" | "dueDate" | "maxPoints"> & {
+  dueDate: string
+  maxPoints: string
+}
 
 export default function AssignmentsPage({ embedded = false }: { embedded?: boolean }) {
   const { subjectId } = useParams<{ subjectId: string }>()
@@ -31,7 +34,12 @@ export default function AssignmentsPage({ embedded = false }: { embedded?: boole
   const queryClient = useQueryClient()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [expandedAssignmentId, setExpandedAssignmentId] = useState<number | null>(null)
-  const { register, handleSubmit, reset } = useForm<AssignmentForm>()
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<AssignmentForm>({ defaultValues: { title: "", description: "", dueDate: "", maxPoints: "" } })
   const canManage = user?.type === "ADMIN" || user?.type === "PROFESSOR"
 
   const assignments = useQuery({
@@ -48,8 +56,10 @@ export default function AssignmentsPage({ embedded = false }: { embedded?: boole
   const createAssignment = useMutation({
     mutationFn: (form: AssignmentForm) =>
       apiClient.post<Assignment>("/assignments", {
-        ...form,
+        title: form.title,
+        description: form.description,
         dueDate: new Date(form.dueDate).toISOString(),
+        maxPoints: form.maxPoints && Number(form.maxPoints) > 0 ? Number(form.maxPoints) : null,
         subjectId: Number(subjectId),
       } satisfies AssignmentRequest),
     onSuccess: async () => {
@@ -58,6 +68,7 @@ export default function AssignmentsPage({ embedded = false }: { embedded?: boole
       reset()
       setDialogOpen(false)
     },
+    onError: (error) => toast.error(getErrorMessage(error)),
   })
 
   return (
@@ -76,7 +87,17 @@ export default function AssignmentsPage({ embedded = false }: { embedded?: boole
         </div>
       )}
 
-      <TabSectionCard title="All assignments">
+      <TabSectionCard
+        title="All assignments"
+        action={
+          embedded &&
+          canManage && (
+            <Button size="sm" onClick={() => setDialogOpen(true)}>
+              Create assignment
+            </Button>
+          )
+        }
+      >
         {assignments.isLoading && <Skeleton className="h-16 w-full" />}
         {assignments.isError && (
           <p className="text-sm text-destructive">Unable to load assignments.</p>
@@ -120,7 +141,13 @@ export default function AssignmentsPage({ embedded = false }: { embedded?: boole
             </div>
             <div className="flex flex-col gap-2">
               <Label htmlFor="assignment-description">Description</Label>
-              <Textarea id="assignment-description" {...register("description")} />
+              <Textarea
+                id="assignment-description"
+                {...register("description", { required: "Description is required." })}
+              />
+              {errors.description && (
+                <p className="text-sm text-destructive">{errors.description.message}</p>
+              )}
             </div>
             <div className="flex flex-col gap-2">
               <Label htmlFor="assignment-due-date">Due date</Label>
@@ -128,6 +155,17 @@ export default function AssignmentsPage({ embedded = false }: { embedded?: boole
                 id="assignment-due-date"
                 type="datetime-local"
                 {...register("dueDate", { required: true })}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="assignment-max-points">Maximum points</Label>
+              <Input
+                id="assignment-max-points"
+                type="number"
+                min={0.5}
+                step={0.5}
+                {...register("maxPoints")}
+                placeholder="Optional"
               />
             </div>
             <DialogFooter>

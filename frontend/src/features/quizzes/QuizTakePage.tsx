@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useEffect, useRef, useState } from "react"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -7,7 +7,14 @@ import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { apiClient } from "@/lib/api-client"
-import type { Quiz, QuizQuestion, QuizSubmission, SubmitQuizRequest } from "@/types/api"
+import type {
+  Quiz,
+  QuizAttempt,
+  QuizAttemptRequest,
+  QuizQuestion,
+  QuizSubmission,
+  SubmitQuizRequest,
+} from "@/types/api"
 import { BackButton } from "@/components/layout/BackButton"
 
 type QuizSubmitResult = Pick<QuizSubmission, "score" | "correctCount" | "totalQuestions" | "result">
@@ -17,15 +24,21 @@ function optionLabel(question: QuizQuestion, optionIndex: number | null): string
   return question.options.find((option) => option.index === optionIndex)?.label ?? "Not answered"
 }
 
+function axiosStatus(error: unknown) {
+  return (error as { response?: { status?: number } }).response?.status
+}
+
 export default function QuizTakePage() {
   const { quizId } = useParams()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const id = Number(quizId)
   const submissionId = Number(searchParams.get("submission"))
   const isReviewMode = Number.isInteger(submissionId) && submissionId > 0
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [result, setResult] = useState<QuizSubmitResult | null>(null)
+  const draftLoadedRef = useRef(false)
 
   const quiz = useQuery({
     queryKey: ["quiz", id],
@@ -40,13 +53,49 @@ export default function QuizTakePage() {
     enabled: isReviewMode,
   })
 
+  const draftAttempt = useQuery({
+    queryKey: ["quiz-attempt", id],
+    queryFn: async () => {
+      try {
+        return (await apiClient.get<QuizAttempt>(`/quizzes/${id}/attempt`)).data
+      } catch (error) {
+        if (axiosStatus(error) === 404) return null
+        throw error
+      }
+    },
+    enabled: Number.isFinite(id) && !isReviewMode,
+  })
+
+  useEffect(() => {
+    if (draftLoadedRef.current || !draftAttempt.data) return
+    draftLoadedRef.current = true
+    const restored: Record<number, number> = {}
+    draftAttempt.data.answers.forEach((optionIndex, questionIndex) => {
+      if (optionIndex !== null) restored[questionIndex] = optionIndex
+    })
+    setAnswers(restored)
+  }, [draftAttempt.data])
+
+  const saveDraft = useMutation({
+    mutationFn: async (body: QuizAttemptRequest) =>
+      (await apiClient.put<QuizAttempt>(`/quizzes/${id}/attempt`, body)).data,
+  })
+
   const submit = useMutation({
     mutationFn: async (body: SubmitQuizRequest) =>
       (await apiClient.post<QuizSubmitResult>(`/quizzes/${id}/submit`, body)).data,
-    onSuccess: setResult,
+    onSuccess: (data) => {
+      setResult(data)
+      queryClient.removeQueries({ queryKey: ["quiz-attempt", id] })
+      void queryClient.invalidateQueries({ queryKey: ["quiz-attempts", "mine"] })
+    },
   })
 
-  if (quiz.isLoading || (isReviewMode && reviewedSubmission.isLoading))
+  if (
+    quiz.isLoading ||
+    (isReviewMode && reviewedSubmission.isLoading) ||
+    (!isReviewMode && draftAttempt.isLoading)
+  )
     return <p className="text-muted-foreground">Loading quiz...</p>
   if (!quiz.data) return <p className="text-muted-foreground">Quiz not found.</p>
   if (isReviewMode && (!reviewedSubmission.data || reviewedSubmission.data.quizId !== id)) {
@@ -60,11 +109,20 @@ export default function QuizTakePage() {
     submit.mutate({ submittedOptionIndexes })
   }
 
+  const handleAnswerChange = (questionIndex: number, optionIndex: number) => {
+    const nextAnswers = { ...answers, [questionIndex]: optionIndex }
+    setAnswers(nextAnswers)
+    saveDraft.mutate({
+      answers: currentQuiz.questions.map((_, index) => nextAnswers[index] ?? null),
+    })
+  }
+
   const answeredCount = Object.keys(answers).length
 
   const startAgain = () => {
     setAnswers({})
     setResult(null)
+    draftLoadedRef.current = false
     navigate(`/quizzes/${id}/take`)
   }
 
@@ -182,9 +240,7 @@ export default function QuizTakePage() {
                     value={
                       answers[questionIndex] !== undefined ? String(answers[questionIndex]) : ""
                     }
-                    onValueChange={(value) =>
-                      setAnswers((old) => ({ ...old, [questionIndex]: Number(value) }))
-                    }
+                    onValueChange={(value) => handleAnswerChange(questionIndex, Number(value))}
                   >
                     {question.options.map((option) => {
                       const optionId = `q${questionIndex}-o${option.index}`

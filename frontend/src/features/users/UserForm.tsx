@@ -13,16 +13,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import type { User, UserType } from "@/types/api"
-
-const userTypes: { value: UserType; label: string }[] = [
-  { value: "STUDENT", label: "Student" },
-  { value: "PROFESSOR", label: "Professor" },
-  { value: "ADMIN", label: "Admin" },
-]
+import { userTypeLabels } from "@/lib/labels"
+import type { User } from "@/types/api"
 
 const userFields = {
-  email: z.string().email("Enter a valid email address"),
+  email: z.email("Enter a valid email address"),
   name: z.string().min(1, "Name is required"),
   surname: z.string().min(1, "Surname is required"),
   type: z.enum(["STUDENT", "PROFESSOR", "ADMIN"]),
@@ -100,9 +95,9 @@ export function UserForm({ mode, user, isSubmitting, onSubmit, onCancel }: UserF
                 <SelectValue placeholder="Select a user type" />
               </SelectTrigger>
               <SelectContent label="Type">
-                {userTypes.map((type) => (
-                  <SelectItem key={type.value} value={type.value}>
-                    {type.label}
+                {Object.entries(userTypeLabels).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -139,7 +134,7 @@ export function UserForm({ mode, user, isSubmitting, onSubmit, onCancel }: UserF
               id={`${mode}-year`}
               type="number"
               min={1}
-              max={8}
+              max={4}
               {...form.register("year", {
                 setValueAs: (value) => (value === "" ? null : Number(value)),
               })}

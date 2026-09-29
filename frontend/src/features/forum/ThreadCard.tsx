@@ -233,8 +233,8 @@ export function ThreadCard({
                 onDelete={() => onDeleteThread(thread.id)}
               />
             </div>
-            <h3 className="mt-2 font-semibold leading-snug">{thread.title}</h3>
-            <p className="mt-1 whitespace-pre-wrap text-sm leading-5">
+            <h3 className="mt-2 font-semibold">{thread.title}</h3>
+            <p className="mt-1 whitespace-pre-wrap text-sm">
               {renderWithMentions(thread.body, subjectMembers)}
             </p>
             {thread.attachmentFileName && (
@@ -298,7 +298,7 @@ export function ThreadCard({
                       onDelete={() => onDeletePost(post.id, thread.id)}
                     />
                   </div>
-                  <p className="mt-0.5 whitespace-pre-wrap text-sm leading-5">
+                  <p className="mt-0.5 whitespace-pre-wrap text-sm">
                     {renderWithMentions(post.body, subjectMembers)}
                   </p>
                 </div>

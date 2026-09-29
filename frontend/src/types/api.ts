@@ -139,6 +139,7 @@ export interface AssignmentRequest {
   title: string
   description: string
   dueDate: string
+  maxPoints: number | null
   subjectId: number
 }
 
@@ -345,6 +346,16 @@ export interface QuizSubmission {
   totalQuestions: number
   result: QuizResultEntry[]
   createdAt: string
+}
+
+export interface QuizAttempt {
+  quizId: number
+  answers: (number | null)[]
+  updatedAt: string
+}
+
+export interface QuizAttemptRequest {
+  answers: (number | null)[]
 }
 
 export type GenerationStatus = "PENDING" | "RUNNING" | "FAILED" | "SUCCESS"

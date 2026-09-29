@@ -150,8 +150,8 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           )}
-          <Card className="lg:min-h-0">
-            <CardHeader className="flex flex-row items-center justify-between gap-3 pb-4">
+          <Card className="lg:min-h-0 gap-3">
+            <CardHeader className="flex flex-row items-center justify-between gap-3 pb-1">
               <div className="flex items-center gap-3">
                 <span className="flex size-8 items-center justify-center rounded-lg bg-[#fff5dc] text-[#956a08]">
                   <CalendarDays className="size-4" />
@@ -168,7 +168,7 @@ export default function DashboardPage() {
                 {upcomingExams.data?.map((exam) => (
                   <div
                     key={exam.id}
-                    className="flex items-center justify-between gap-3 px-2 py-1.5"
+                    className="flex items-center justify-between gap-3 px-2 py-2.5"
                   >
                     <div>
                       <p className="font-medium">{exam.name}</p>

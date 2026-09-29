@@ -44,17 +44,17 @@ export function AssignmentRow({
           <p className="mt-1 text-sm text-muted-foreground">
             Due {formatDateTime(assignment.dueDate)}
             {isStudent && (
-              <>
-                {" "}
-                ·{" "}
-                {submission.isLoading
-                  ? "Checking status..."
-                  : submission.isError
-                    ? "Status unavailable"
-                    : submission.data
-                      ? "Submitted"
-                      : "Not handed in"}
-              </>
+              <div className="flex flex-col">
+                {submission.isLoading ? (
+                  "Checking status..."
+                ) : submission.isError ? (
+                  "Status unavailable"
+                ) : submission.data ? (
+                  <span className="text-green-600">Submitted</span>
+                ) : (
+                  "Not handed in"
+                )}
+              </div>
             )}
           </p>
         </div>

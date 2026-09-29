@@ -52,7 +52,7 @@ export function AppLayout() {
             <span className="flex size-10 items-center justify-center text-primary">
               <GraduationCap className="size-8" strokeWidth={2.2} />
             </span>
-            <span className="flex flex-col leading-tight">
+            <span className="flex flex-col">
               <span className="font-heading text-[15px] font-semibold text-foreground">
                 IMILearn
               </span>

@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { materialCategoryLabels, materialTypeLabels } from "@/lib/labels"
 import type { Material, MaterialCategory, MaterialRequest, MaterialType } from "@/types/api"
 
 const materialSchema = z.object({
@@ -23,25 +24,6 @@ const materialSchema = z.object({
   path: z.string().trim().min(1, "Path is required"),
 })
 type MaterialValues = z.infer<typeof materialSchema>
-const materialTypes: Array<{ value: MaterialType; label: string }> = [
-  { value: "DOCUMENT", label: "Document" },
-  { value: "VIDEO", label: "Video" },
-  { value: "IMAGE", label: "Image" },
-  { value: "LINK", label: "Link" },
-  { value: "OTHER", label: "Other" },
-]
-const materialCategories: Array<{ value: MaterialCategory; label: string }> = [
-  { value: "LECTURE", label: "Lecture" },
-  { value: "EXERCISES", label: "Exercises" },
-  { value: "EXAM_QUESTIONS", label: "Exam questions" },
-  { value: "OTHER", label: "Not specified" },
-]
-const materialCategoryLabel = Object.fromEntries(
-  materialCategories.map((category) => [category.value, category.label]),
-) as Record<MaterialCategory, string>
-const materialTypeLabel = Object.fromEntries(
-  materialTypes.map((type) => [type.value, type.label]),
-) as Record<MaterialType, string>
 
 interface MaterialFormProps {
   initial?: Material
@@ -91,14 +73,14 @@ export function MaterialForm({ initial, subjectId, onSubmit, submitting }: Mater
                 <SelectTrigger className="w-full">
                   <SelectValue>
                     {(value: MaterialCategory | null) =>
-                      value ? materialCategoryLabel[value] : "Select type"
+                      value ? materialCategoryLabels[value] : "Select type"
                     }
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent label="Type">
-                  {materialCategories.map((category) => (
-                    <SelectItem key={category.value} value={category.value}>
-                      {category.label}
+                  {Object.entries(materialCategoryLabels).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -116,14 +98,14 @@ export function MaterialForm({ initial, subjectId, onSubmit, submitting }: Mater
                 <SelectTrigger className="w-full">
                   <SelectValue>
                     {(value: MaterialType | null) =>
-                      value ? materialTypeLabel[value] : "Select format"
+                      value ? materialTypeLabels[value] : "Select format"
                     }
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent label="Resource format">
-                  {materialTypes.map((type) => (
-                    <SelectItem key={type.value} value={type.value}>
-                      {type.label}
+                  {Object.entries(materialTypeLabels).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
                     </SelectItem>
                   ))}
                 </SelectContent>

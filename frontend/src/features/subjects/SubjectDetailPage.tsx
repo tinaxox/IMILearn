@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { TabSectionCard } from "@/components/layout/TabSectionCard"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
-import { DataTable, type DataTableColumnDef } from "@/components/layout/DataTable"
+import { DataTable } from "@/components/layout/DataTable"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useAuth } from "@/features/auth/AuthContext"
 import { BackButton } from "@/components/layout/BackButton"
@@ -14,30 +14,17 @@ import AssignmentsPage from "@/features/assignments/AssignmentsPage"
 import ExamsPage from "@/features/exams/ExamsPage"
 import ForumPage from "@/features/forum/ForumPage"
 import { apiClient, getErrorMessage } from "@/lib/api-client"
-import type {
-  Material,
-  MaterialCategory,
-  MaterialRequest,
-  Page,
-  Subject,
-  SubjectRequest,
-  User,
-} from "@/types/api"
+import type { Material, MaterialRequest, Page, Subject, SubjectRequest, User } from "@/types/api"
 import { toast } from "sonner"
 import { YearBadge } from "@/features/subjects/YearBadge"
 import { AddMembersDialog } from "@/features/subjects/AddMembersDialog"
-import { MaterialDownload } from "@/features/subjects/MaterialDownload"
+import { materialsGridColumns } from "@/features/subjects/materialsGridColumns"
+import { membersGridColumns } from "@/features/subjects/membersGridColumns"
 import { MaterialForm } from "@/features/subjects/MaterialForm"
 import { SubjectForm } from "@/features/subjects/SubjectForm"
 
 const subjectTabs = ["materials", "members", "assignments", "exams", "forum"] as const
 type SubjectTab = (typeof subjectTabs)[number]
-const materialCategoryLabel: Record<MaterialCategory, string> = {
-  LECTURE: "Lecture",
-  EXERCISES: "Exercises",
-  EXAM_QUESTIONS: "Exam questions",
-  OTHER: "Not specified",
-}
 
 export default function SubjectDetailPage() {
   const { subjectId } = useParams<{ subjectId: string }>()
@@ -133,122 +120,24 @@ export default function SubjectDetailPage() {
     mutationFn: (userId: number) => apiClient.delete(`/subjects/${id}/members/${userId}`),
     onSuccess: () => closeAndInvalidate("Member removed", ["subjects", id, "members"]),
   })
-  const isUrl = (path: string) => /^https?:\/\//i.test(path)
   const memberCandidates = (allUsers.data ?? []).filter(
     (candidate) =>
       (user?.type === "ADMIN" || candidate.type === "STUDENT") &&
       !members.data?.some((member) => member.id === candidate.id),
   )
-  const materialColumns: DataTableColumnDef<Material>[] = [
-    {
-      accessorKey: "name",
-      header: "Name",
-      cell: ({ row }) => (
-        <div className="flex flex-col">
-          <span className="font-medium">{row.original.name}</span>
-        </div>
-      ),
+  const materialColumns = materialsGridColumns({
+    canManage,
+    onEdit: (material) => {
+      setEditingMaterial(material)
+      setMaterialDialog(true)
     },
-    {
-      accessorKey: "category",
-      header: "Type",
-      cell: ({ row }) =>
-        row.original.category && row.original.category !== "OTHER" ? (
-          <span className="text-muted-foreground">
-            {materialCategoryLabel[row.original.category]}
-          </span>
-        ) : (
-          "-"
-        ),
-    },
-    {
-      accessorKey: "path",
-      header: "File",
-      meta: { cellClassName: "max-w-xs truncate" },
-      cell: ({ row }) =>
-        isUrl(row.original.path) ? (
-          <a
-            className="text-primary underline"
-            href={row.original.path}
-            target="_blank"
-            rel="noreferrer"
-            onClick={() => {
-              void apiClient.get(`/materials/${row.original.id}`)
-            }}
-          >
-            {row.original.path}
-          </a>
-        ) : (
-          <MaterialDownload material={row.original} />
-        ),
-    },
-    ...(canManage
-      ? [
-          {
-            id: "actions",
-            header: "Actions",
-            meta: { headerClassName: "text-right", cellClassName: "text-right" },
-            cell: ({ row }) => (
-              <div className="flex justify-end gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    setEditingMaterial(row.original)
-                    setMaterialDialog(true)
-                  }}
-                >
-                  Edit
-                </Button>
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => setDeleteMaterial(row.original)}
-                >
-                  Delete
-                </Button>
-              </div>
-            ),
-          } satisfies DataTableColumnDef<Material>,
-        ]
-      : []),
-  ]
-  const memberColumns: DataTableColumnDef<User>[] = [
-    {
-      accessorKey: "name",
-      header: "Name",
-      cell: ({ row }) => (
-        <span className="font-medium">
-          {row.original.name} {row.original.surname}
-        </span>
-      ),
-    },
-    { accessorKey: "email", header: "Email", meta: { cellClassName: "text-muted-foreground" } },
-    {
-      accessorKey: "type",
-      header: "Type",
-      cell: ({ row }) => <span className="text-muted-foreground">{row.original.type}</span>,
-    },
-    ...(canManage
-      ? [
-          {
-            id: "actions",
-            header: "Actions",
-            meta: { headerClassName: "text-right", cellClassName: "text-right" },
-            cell: ({ row }) => (
-              <Button
-                size="sm"
-                variant="destructive"
-                disabled={removeSubjectMember.isPending}
-                onClick={() => removeSubjectMember.mutate(row.original.id)}
-              >
-                Delete
-              </Button>
-            ),
-          } satisfies DataTableColumnDef<User>,
-        ]
-      : []),
-  ]
+    onDelete: (material) => setDeleteMaterial(material),
+  })
+  const memberColumns = membersGridColumns({
+    canManage,
+    onRemove: (userId) => removeSubjectMember.mutate(userId),
+    removePending: removeSubjectMember.isPending,
+  })
 
   if (subject.isLoading) return <Skeleton className="h-48 w-full" />
   if (subject.isError || !subject.data)

@@ -24,13 +24,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
-import { DataTable, type DataTableColumnDef } from "@/components/layout/DataTable"
+import { DataTable } from "@/components/layout/DataTable"
 import { useAuth } from "@/features/auth/AuthContext"
 import { apiClient } from "@/lib/api-client"
-import { formatDateTime } from "@/lib/utils"
+import { examTypeLabels } from "@/lib/labels"
 import type { Exam, ExamRequest, Page, StudentExamGrade, Subject } from "@/types/api"
 import { BackButton } from "@/components/layout/BackButton"
 import { ExamGradingDialog } from "@/features/exams/ExamGradingDialog"
+import { examsGridColumns } from "@/features/exams/examsGridColumns"
 
 interface ExamFormValues {
   subjectId: string
@@ -38,8 +39,6 @@ interface ExamFormValues {
   date: string
   type: "MIDTERM" | "FINAL" | "OTHER"
 }
-
-const examTypeLabels = { MIDTERM: "Midterm", FINAL: "Final", OTHER: "Other" } as const
 
 function toDateTimeLocal(date: string) {
   const parsed = new Date(date)
@@ -204,119 +203,20 @@ export default function ExamsPage({ embedded = false }: { embedded?: boolean }) 
       Number(a.type === "FINAL") - Number(b.type === "FINAL") ||
       new Date(a.date).getTime() - new Date(b.date).getTime(),
   )
-  const columns: DataTableColumnDef<Exam>[] = [
-    { accessorKey: "name", header: "Name", meta: { cellClassName: "font-medium" } },
-    ...(isAllExamsPage
-      ? [
-          {
-            accessorKey: "subjectName",
-            header: "Subject",
-            meta: { cellClassName: "text-muted-foreground" },
-          } satisfies DataTableColumnDef<Exam>,
-        ]
-      : []),
-    {
-      accessorKey: "type",
-      header: "Type",
-      cell: ({ row }) =>
-        row.original.type && row.original.type !== "OTHER" ? (
-          <span className={row.original.type === "FINAL" ? "text-destructive" : "text-amber-600"}>
-            {examTypeLabels[row.original.type]}
-          </span>
-        ) : (
-          "-"
-        ),
+  const columns = examsGridColumns({
+    isAllExamsPage,
+    canManageExams,
+    userType: user?.type,
+    studentGradesLoading,
+    studentGradesByExam,
+    onViewGrading: (exam) => setGradingExam(exam),
+    onAddMaxPoints: (exam) => {
+      setMaxPointsExam(exam)
+      setMaxPointsDraft("")
     },
-    {
-      id: "points",
-      header: "Points",
-      cell: ({ row }) =>
-        canManageExams ? (
-          new Date(row.original.date).getTime() <= Date.now() &&
-          row.original.maxPoints != null &&
-          row.original.maxPoints > 0 ? (
-            <Button variant="outline" size="sm" onClick={() => setGradingExam(row.original)}>
-              View {row.original.type === "FINAL" ? "results" : "points"}
-            </Button>
-          ) : (
-            "-"
-          )
-        ) : user?.type === "STUDENT" ? (
-          studentGradesLoading ? (
-            <Skeleton className="h-5 w-12" />
-          ) : (
-            (studentGradesByExam.get(row.original.id)?.points ?? "-")
-          )
-        ) : (
-          "-"
-        ),
-    },
-    {
-      accessorKey: "maxPoints",
-      header: "Max points",
-      cell: ({ row }) =>
-        canManageExams ? (
-          row.original.maxPoints == null || row.original.maxPoints <= 0 ? (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setMaxPointsExam(row.original)
-                setMaxPointsDraft("")
-              }}
-            >
-              Add max points
-            </Button>
-          ) : (
-            row.original.maxPoints
-          )
-        ) : user?.type === "STUDENT" ? (
-          row.original.maxPoints == null || row.original.maxPoints <= 0 ? (
-            "-"
-          ) : (
-            row.original.maxPoints
-          )
-        ) : (
-          "-"
-        ),
-    },
-    {
-      accessorKey: "date",
-      header: "Date",
-      cell: ({ row }) => (
-        <span
-          className={
-            new Date(row.original.date).getTime() >= Date.now() ? "text-primary" : undefined
-          }
-        >
-          {formatDateTime(row.original.date)}
-        </span>
-      ),
-    },
-    ...(canManageExams
-      ? [
-          {
-            id: "actions",
-            header: "Actions",
-            meta: { headerClassName: "text-right", cellClassName: "text-right" },
-            cell: ({ row }) => (
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" size="sm" onClick={() => openEditDialog(row.original)}>
-                  Edit
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => setExamToDelete(row.original)}
-                >
-                  Delete
-                </Button>
-              </div>
-            ),
-          } satisfies DataTableColumnDef<Exam>,
-        ]
-      : []),
-  ]
+    onEdit: (exam) => openEditDialog(exam),
+    onDelete: (exam) => setExamToDelete(exam),
+  })
 
   return (
     <div className={embedded ? "flex flex-col gap-4" : "flex flex-col gap-6"}>
@@ -330,8 +230,8 @@ export default function ExamsPage({ embedded = false }: { embedded?: boolean }) 
             <p className="text-muted-foreground">
               {isAllExamsPage
                 ? canManageExams
-                  ? "Manage exams for your subjects."
-                  : "View exams for your subjects."
+                  ? "Manage exams across all subjects."
+                  : "View exams across all subjects."
                 : "Exams scheduled for this subject."}
             </p>
           </div>

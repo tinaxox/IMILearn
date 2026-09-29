@@ -12,8 +12,8 @@ const subjectSchema = z.object({
   year: z
     .number()
     .int("Year must be a whole number")
-    .min(1, "Year must be between 1 and 6")
-    .max(6, "Year must be between 1 and 6"),
+    .min(1, "Year must be between 1 and 4")
+    .max(4, "Year must be between 1 and 4"),
 })
 
 type SubjectFormValues = z.infer<typeof subjectSchema>
@@ -48,12 +48,12 @@ export function SubjectForm({ initial, onSubmit, submitting }: SubjectFormProps)
           id={`${mode === "edit" ? "edit-" : ""}subject-year`}
           type="number"
           min={1}
-          max={6}
+          max={4}
           {...register("year", { valueAsNumber: true })}
         />
         {errors.year && (
           <p className="text-sm text-destructive">
-            {initial ? "Year must be between 1 and 6" : errors.year.message}
+            {initial ? "Year must be between 1 and 4" : errors.year.message}
           </p>
         )}
       </div>

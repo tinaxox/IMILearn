@@ -21,9 +21,9 @@ Početno ulogovanje: admin@imilearn.com changeme123
 ./mvnw test
 
 **frontend**
-npx playwright install chromium
-npm run test:e2e
-npx playwright test --headed --workers=1
+- npx playwright install chromium
+- npm run test:e2e
+- npx playwright test --headed --workers=1
 
 **OPIS STRANICA**:
 Stranica *Dashboard* je glavna stranica za svakog korisnika. Na njoj se nalaze najbitnije i osnovne stvari po sledećem rasporedu:

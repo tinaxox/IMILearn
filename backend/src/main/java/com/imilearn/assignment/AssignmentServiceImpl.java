@@ -47,7 +47,8 @@ public class AssignmentServiceImpl implements AssignmentService {
         Subject subject = subjectAccessService.getAccessibleSubject(request.getSubjectId(), currentUser);
 
         Assignment assignment = assignmentRepository.save(Assignment.builder().title(request.getTitle())
-                .description(request.getDescription()).dueDate(request.getDueDate()).subject(subject).build());
+                .description(request.getDescription()).dueDate(request.getDueDate())
+                .maxPoints(request.getMaxPoints()).subject(subject).build());
         notificationService.notify(subject.getUsers().stream()
                         .filter(user -> user.getType() == com.imilearn.user.UserType.STUDENT).toList(),
                 NotificationType.ASSIGNMENT_CREATED, "New assignment: " + assignment.getTitle(),
@@ -64,6 +65,7 @@ public class AssignmentServiceImpl implements AssignmentService {
         assignment.setTitle(request.getTitle());
         assignment.setDescription(request.getDescription());
         assignment.setDueDate(request.getDueDate());
+        assignment.setMaxPoints(request.getMaxPoints());
         if (!request.getSubjectId().equals(assignment.getSubject().getId())) {
             assignment.setSubject(subjectAccessService.getAccessibleSubject(request.getSubjectId(), currentUser));
         }

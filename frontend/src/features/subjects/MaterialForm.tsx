@@ -2,7 +2,7 @@ import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
-import { FileUpload } from "@/components/layout/FileUpload"
+import { FileUpload, type UploadedFile } from "@/components/layout/FileUpload"
 import { Button } from "@/components/ui/button"
 import { DialogFooter } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
@@ -50,6 +50,11 @@ export function MaterialForm({ initial, subjectId, onSubmit, submitting }: Mater
     },
   })
   const [uploading, setUploading] = useState(false)
+  const [fileValue, setFileValue] = useState<UploadedFile[]>(
+    initial && initial.type !== "LINK" && initial.path
+      ? [{ storageKey: initial.path, fileName: initial.name, contentType: "", sizeBytes: 0 }]
+      : [],
+  )
   const isLink = watch("type") === "LINK"
 
   return (
@@ -103,11 +108,13 @@ export function MaterialForm({ initial, subjectId, onSubmit, submitting }: Mater
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent label="Resource format">
-                  {Object.entries(materialTypeLabels).map(([value, label]) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
-                    </SelectItem>
-                  ))}
+                  {Object.entries(materialTypeLabels)
+                    .filter(([value]) => value !== "VIDEO")
+                    .map(([value, label]) => (
+                      <SelectItem key={value} value={value}>
+                        {label}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             )}
@@ -128,21 +135,14 @@ export function MaterialForm({ initial, subjectId, onSubmit, submitting }: Mater
             uploadUrlEndpoint="/materials/upload-url"
             variant="dropzone"
             disabled={uploading}
+            value={fileValue}
             onUploadingChange={setUploading}
-            onChange={(files) =>
-              setValue("path", files[0]?.storageKey ?? initial?.path ?? "", {
-                shouldValidate: true,
-              })
-            }
+            onChange={(files) => {
+              setFileValue(files)
+              setValue("path", files[0]?.storageKey ?? "", { shouldValidate: true })
+            }}
             successMessage="File uploaded"
             resetInputOnError={false}
-            emptyContent={
-              initial?.path && (
-                <p className="text-sm text-muted-foreground">
-                  Current file will be kept unless you upload a new one.
-                </p>
-              )
-            }
           />
           <input type="hidden" {...register("path")} />
           {errors.path && <p className="text-sm text-destructive">A file upload is required</p>}

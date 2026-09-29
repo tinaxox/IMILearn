@@ -239,7 +239,7 @@ export default function SubjectDetailPage() {
           {activeTab === "assignments" && <AssignmentsPage embedded />}
         </TabsContent>
         <TabsContent value="exams">{activeTab === "exams" && <ExamsPage embedded />}</TabsContent>
-        <TabsContent value="forum">{activeTab === "forum" && <ForumPage embedded />}</TabsContent>
+        <TabsContent value="forum">{activeTab === "forum" && <ForumPage />}</TabsContent>
       </Tabs>
 
       <Dialog open={subjectDialog} onOpenChange={setSubjectDialog}>

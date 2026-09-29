@@ -12,7 +12,6 @@ interface ExamsGridColumnsOptions {
   studentGradesLoading: boolean
   studentGradesByExam: Map<number, StudentExamGrade>
   onViewGrading: (exam: Exam) => void
-  onAddMaxPoints: (exam: Exam) => void
   onEdit: (exam: Exam) => void
   onDelete: (exam: Exam) => void
 }
@@ -24,7 +23,6 @@ export function examsGridColumns({
   studentGradesLoading,
   studentGradesByExam,
   onViewGrading,
-  onAddMaxPoints,
   onEdit,
   onDelete,
 }: ExamsGridColumnsOptions): DataTableColumnDef<Exam>[] {
@@ -77,15 +75,14 @@ export function examsGridColumns({
     },
     {
       accessorKey: "maxPoints",
-      header: "Max points",
+      header: "Max",
+      meta: { headerClassName: "w-16", cellClassName: "w-16" },
       cell: ({ row }) =>
         canManageExams ? (
-          row.original.maxPoints == null || row.original.maxPoints <= 0 ? (
-            <Button variant="outline" size="sm" onClick={() => onAddMaxPoints(row.original)}>
-              Add max points
-            </Button>
-          ) : (
+          row.original.maxPoints != null && row.original.maxPoints > 0 ? (
             row.original.maxPoints
+          ) : (
+            "-"
           )
         ) : userType === "STUDENT" ? (
           row.original.maxPoints == null || row.original.maxPoints <= 0 ? (

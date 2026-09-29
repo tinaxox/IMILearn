@@ -12,7 +12,12 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { DataTable } from "@/components/layout/DataTable"
 import { apiClient } from "@/lib/api-client"
-import { examGradingGridColumns, type GradingMeta } from "@/features/exams/examGradingGridColumns"
+import {
+  examGradingGridColumns,
+  isFinalGradeInvalid,
+  isPointsInvalid,
+  type GradingMeta,
+} from "@/features/exams/examGradingGridColumns"
 import type { Exam, ExamGrade } from "@/types/api"
 
 interface ExamGradingDialogProps {
@@ -103,6 +108,12 @@ export function ExamGradingDialog({ exam, onClose, canManageExams }: ExamGrading
       (entry): entry is { studentId: number; payload: { points: number; grade?: number } } =>
         entry.payload !== null,
     )
+  const hasInvalidDrafts = (gradesQuery.data ?? []).some((result) => {
+    const pointsDraft = isFinal ? finalPointDrafts[result.studentId] : gradeDrafts[result.studentId]
+    if (isPointsInvalid(pointsDraft ?? "", exam?.maxPoints)) return true
+    if (isFinal && isFinalGradeInvalid(gradeDrafts[result.studentId] ?? "")) return true
+    return false
+  })
 
   const gradingMeta: GradingMeta = {
     gradeDrafts,
@@ -117,7 +128,10 @@ export function ExamGradingDialog({ exam, onClose, canManageExams }: ExamGrading
 
   return (
     <Dialog open={exam !== null} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-h-[calc(100svh-2rem)] overflow-y-auto sm:max-w-4xl">
+      <DialogContent
+        className="max-h-[calc(100svh-2rem)] overflow-y-auto sm:max-w-4xl"
+        initialFocus={false}
+      >
         <DialogHeader>
           <DialogTitle>{exam?.type === "FINAL" ? "Final exam grades" : "Exam points"}</DialogTitle>
           <p className="text-sm font-medium text-muted-foreground">{exam?.name}</p>
@@ -138,7 +152,7 @@ export function ExamGradingDialog({ exam, onClose, canManageExams }: ExamGrading
             />
             <DialogFooter>
               <Button
-                disabled={!gradableEntries.length || gradeMutation.isPending}
+                disabled={!gradableEntries.length || hasInvalidDrafts || gradeMutation.isPending}
                 onClick={() =>
                   gradeMutation.mutate(
                     gradableEntries.map(({ studentId, payload }) => ({ studentId, ...payload })),

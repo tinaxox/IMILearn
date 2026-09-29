@@ -122,6 +122,7 @@ export default function SubjectDetailPage() {
   })
   const memberCandidates = (allUsers.data ?? []).filter(
     (candidate) =>
+      candidate.type !== "ADMIN" &&
       (user?.type === "ADMIN" || candidate.type === "STUDENT") &&
       !members.data?.some((member) => member.id === candidate.id),
   )

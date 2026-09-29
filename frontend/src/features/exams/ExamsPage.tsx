@@ -230,8 +230,8 @@ export default function ExamsPage({ embedded = false }: { embedded?: boolean }) 
             <p className="text-muted-foreground">
               {isAllExamsPage
                 ? canManageExams
-                  ? "Manage exams for your subjects."
-                  : "View exams for your subjects."
+                  ? "Manage exams across all subjects."
+                  : "View exams across all subjects."
                 : "Exams scheduled for this subject."}
             </p>
           </div>

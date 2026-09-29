@@ -5,7 +5,6 @@ import { useRef, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { useParams } from "react-router-dom"
 import { z } from "zod"
-import { BackButton } from "@/components/layout/BackButton"
 import { ConfirmDeleteDialog } from "@/components/layout/ConfirmDeleteDialog"
 import {
   FileUpload,
@@ -34,7 +33,7 @@ const threadSchema = z.object({
 type ThreadValues = z.infer<typeof threadSchema>
 type DeleteTarget = { kind: "thread"; id: number } | { kind: "post"; id: number; threadId: number }
 
-export default function ForumPage({ embedded = false }: { embedded?: boolean }) {
+export default function ForumPage() {
   const { subjectId } = useParams<{ subjectId: string }>()
   const { user } = useAuth()
   const queryClient = useQueryClient()
@@ -196,6 +195,10 @@ export default function ForumPage({ embedded = false }: { embedded?: boolean }) 
     </Card>
   )
 
+  const sortedThreads = [...(threads.data?.content ?? [])].sort(
+    (first, second) => new Date(second.createdAt).getTime() - new Date(first.createdAt).getTime(),
+  )
+
   const threadList = (
     <>
       {threads.isLoading && (
@@ -209,7 +212,7 @@ export default function ForumPage({ embedded = false }: { embedded?: boolean }) 
         <p className="text-sm text-muted-foreground">No threads yet.</p>
       )}
       <div className="flex flex-col gap-3">
-        {threads.data?.content.map((thread) => (
+        {sortedThreads.map((thread) => (
           <ThreadCard
             key={thread.id}
             thread={thread}
@@ -226,38 +229,19 @@ export default function ForumPage({ embedded = false }: { embedded?: boolean }) 
   )
 
   return (
-    <div className={embedded ? "flex flex-col gap-4" : "flex flex-col gap-6"}>
-      {!embedded && (
-        <div className="page-heading">
-          <div className="flex flex-col gap-2">
-            <BackButton />
-            <h1>Forum</h1>
-            <p className="text-muted-foreground">Discuss this subject with other members.</p>
-          </div>
-          <Button disabled={newThreadOpen} onClick={() => setNewThreadOpen(true)}>
+    <div className="flex flex-col gap-4">
+      <TabSectionCard
+        title="Forum"
+        action={
+          <Button size="sm" disabled={newThreadOpen} onClick={() => setNewThreadOpen(true)}>
             New thread
           </Button>
-        </div>
-      )}
-      {embedded ? (
-        <TabSectionCard
-          title="Forum"
-          action={
-            <Button size="sm" disabled={newThreadOpen} onClick={() => setNewThreadOpen(true)}>
-              New thread
-            </Button>
-          }
-          contentClassName="flex flex-col gap-3"
-        >
-          {composer}
-          {threadList}
-        </TabSectionCard>
-      ) : (
-        <>
-          {composer}
-          {threadList}
-        </>
-      )}
+        }
+        contentClassName="flex flex-col gap-3"
+      >
+        {composer}
+        {threadList}
+      </TabSectionCard>
       <ConfirmDeleteDialog
         open={deleteTarget !== null}
         onOpenChange={(open) => !open && setDeleteTarget(null)}

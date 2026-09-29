@@ -30,7 +30,10 @@ import { BackButton } from "@/components/layout/BackButton"
 import { FileDownload } from "@/features/assignments/FileDownload"
 import { ViewSubmissionDialog } from "@/features/assignments/ViewSubmissionDialog"
 
-type AssignmentForm = Omit<AssignmentRequest, "subjectId" | "dueDate"> & { dueDate: string }
+type AssignmentForm = Omit<AssignmentRequest, "subjectId" | "dueDate" | "maxPoints"> & {
+  dueDate: string
+  maxPoints: string
+}
 
 function localDateTime(isoDate: string) {
   const date = new Date(isoDate)
@@ -54,8 +57,6 @@ export default function AssignmentDetailPage({
   const queryClient = useQueryClient()
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
-  const [maxPointsOpen, setMaxPointsOpen] = useState(false)
-  const [maxPointsDraft, setMaxPointsDraft] = useState("")
   const [viewingSubmission, setViewingSubmission] = useState<AssignmentSubmission | null>(null)
   const [submissionText, setSubmissionText] = useState("")
   const [hasSelectedFiles, setHasSelectedFiles] = useState(false)
@@ -104,14 +105,21 @@ export default function AssignmentDetailPage({
       title: assignment.data.title,
       description: assignment.data.description,
       dueDate: localDateTime(assignment.data.dueDate),
+      maxPoints:
+        assignment.data.maxPoints != null && assignment.data.maxPoints > 0
+          ? String(assignment.data.maxPoints)
+          : "",
     })
     setEditOpen(true)
   }
   const editAssignment = useMutation({
     mutationFn: (values: AssignmentForm) =>
       apiClient.put<Assignment>(`/assignments/${assignmentId}`, {
-        ...values,
+        title: values.title,
+        description: values.description,
         dueDate: new Date(values.dueDate).toISOString(),
+        maxPoints:
+          values.maxPoints && Number(values.maxPoints) > 0 ? Number(values.maxPoints) : null,
         subjectId: assignment.data!.subjectId,
       } satisfies AssignmentRequest),
     onSuccess: async () => {
@@ -128,16 +136,6 @@ export default function AssignmentDetailPage({
       toast.success("Assignment deleted")
       if (embedded) onDeleted?.()
       else navigate(-1)
-    },
-  })
-  const maxPointsMutation = useMutation({
-    mutationFn: (maxPoints: number) =>
-      apiClient.put<Assignment>(`/assignments/${assignmentId}/max-points`, { maxPoints }),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["assignment", assignmentId] })
-      toast.success("Maximum points saved.")
-      setMaxPointsOpen(false)
-      setMaxPointsDraft("")
     },
   })
   const submitAssignment = useMutation({
@@ -374,19 +372,7 @@ export default function AssignmentDetailPage({
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Submissions</CardTitle>
-            {currentAssignment.maxPoints == null ? (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setMaxPointsDraft("")
-                  setMaxPointsOpen(true)
-                }}
-              >
-                Add max points
-              </Button>
-            ) : (
+            {currentAssignment.maxPoints != null && currentAssignment.maxPoints > 0 && (
               <span className="text-sm text-muted-foreground">
                 Max points: {currentAssignment.maxPoints}
               </span>
@@ -425,48 +411,6 @@ export default function AssignmentDetailPage({
         assignmentId={assignmentId}
         maxPoints={currentAssignment.maxPoints}
       />
-      <Dialog
-        open={maxPointsOpen}
-        onOpenChange={(open) => {
-          setMaxPointsOpen(open)
-          if (!open) setMaxPointsDraft("")
-        }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add maximum points</DialogTitle>
-            <DialogDescription>{currentAssignment.title}</DialogDescription>
-          </DialogHeader>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="assignment-maximum-points">Maximum points</Label>
-            <Input
-              id="assignment-maximum-points"
-              type="number"
-              min={0.5}
-              step={0.5}
-              value={maxPointsDraft}
-              onChange={(event) => setMaxPointsDraft(event.target.value)}
-              placeholder="Enter maximum points"
-            />
-          </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setMaxPointsOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              disabled={
-                !Number.isFinite(Number(maxPointsDraft)) ||
-                Number(maxPointsDraft) <= 0 ||
-                maxPointsMutation.isPending
-              }
-              onClick={() => maxPointsMutation.mutate(Number(maxPointsDraft))}
-            >
-              Save
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent>
           <DialogHeader>
@@ -491,6 +435,17 @@ export default function AssignmentDetailPage({
                 id="edit-due-date"
                 type="datetime-local"
                 {...form.register("dueDate", { required: true })}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="edit-max-points">Maximum points</Label>
+              <Input
+                id="edit-max-points"
+                type="number"
+                min={0.5}
+                step={0.5}
+                {...form.register("maxPoints")}
+                placeholder="Optional"
               />
             </div>
             <DialogFooter>

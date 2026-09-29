@@ -122,6 +122,7 @@ export default function SubjectDetailPage() {
   })
   const memberCandidates = (allUsers.data ?? []).filter(
     (candidate) =>
+      candidate.type !== "ADMIN" &&
       (user?.type === "ADMIN" || candidate.type === "STUDENT") &&
       !members.data?.some((member) => member.id === candidate.id),
   )
@@ -238,7 +239,7 @@ export default function SubjectDetailPage() {
           {activeTab === "assignments" && <AssignmentsPage embedded />}
         </TabsContent>
         <TabsContent value="exams">{activeTab === "exams" && <ExamsPage embedded />}</TabsContent>
-        <TabsContent value="forum">{activeTab === "forum" && <ForumPage embedded />}</TabsContent>
+        <TabsContent value="forum">{activeTab === "forum" && <ForumPage />}</TabsContent>
       </Tabs>
 
       <Dialog open={subjectDialog} onOpenChange={setSubjectDialog}>

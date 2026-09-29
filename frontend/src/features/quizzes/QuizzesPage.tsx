@@ -4,7 +4,6 @@ import { useParams, useSearchParams } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { Progress } from "@/components/ui/progress"
 import {
   Select,
   SelectContent,
@@ -81,7 +80,10 @@ export default function QuizzesPage() {
   })
 
   const inFlightRequests = (generationRequests.data ?? []).filter(
-    (request) => request.subjectId === numericSubjectId && request.status !== "SUCCESS",
+    (request) =>
+      request.subjectId === numericSubjectId &&
+      request.status !== "SUCCESS" &&
+      request.status !== "FAILED",
   )
   const latestSubmissionByQuiz = (submissions.data ?? []).reduce<Map<number, QuizSubmission>>(
     (latest, submission) => {
@@ -187,15 +189,6 @@ export default function QuizzesPage() {
                 {request.errorMessage && (
                   <p className="text-sm text-destructive">{request.errorMessage}</p>
                 )}
-                <Progress
-                  value={
-                    request.materialSteps.length
-                      ? (request.materialSteps.filter((s) => s.status === "SUCCESS").length /
-                          request.materialSteps.length) *
-                        100
-                      : 0
-                  }
-                />
               </div>
             ))}
           </CardContent>
@@ -215,7 +208,7 @@ export default function QuizzesPage() {
           {quizzes.isLoading && <p className="text-sm text-muted-foreground">Loading quizzes...</p>}
           {quizzes.data?.length === 0 && !quizzes.isLoading && (
             <p className="text-sm text-muted-foreground">
-              No quizzes yet — create one or generate one from materials.
+              No quizzes yet - create one or generate one from materials.
             </p>
           )}
           {quizzes.data && quizzes.data.length > 0 && (

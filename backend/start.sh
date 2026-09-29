@@ -12,7 +12,7 @@ if [[ -f "$BACKEND_DIR/.env" ]]; then
   source "$BACKEND_DIR/.env"
   set +a
 else
-  echo "==> No backend/.env found — copy backend/.env.example to backend/.env and fill in real values (e.g. OPENROUTER_API_KEY)."
+  echo "==> No backend/.env found - copy backend/.env.example to backend/.env and fill in real values (e.g. OPENROUTER_API_KEY)."
 fi
 
 BACKEND_PID=""
@@ -57,7 +57,7 @@ until curl -sS -o /dev/null http://localhost:3900; do
 done
 echo "    Garage is ready."
 
-echo "==> Starting backend (Spring Boot) — logging to $ROOT_DIR/backend.log"
+echo "==> Starting backend (Spring Boot) - logging to $ROOT_DIR/backend.log"
 (cd "$BACKEND_DIR" && ./mvnw -q spring-boot:run) > "$ROOT_DIR/backend.log" 2>&1 &
 BACKEND_PID=$!
 
@@ -67,7 +67,7 @@ until curl -sS -o /dev/null http://localhost:8080/api/auth/login -X POST -H "Con
 done
 echo "    Backend is up."
 
-echo "==> Starting frontend (Vite dev server) — logging to $ROOT_DIR/frontend.log"
+echo "==> Starting frontend (Vite dev server) - logging to $ROOT_DIR/frontend.log"
 (cd "$FRONTEND_DIR" && npm run dev) > "$ROOT_DIR/frontend.log" 2>&1 &
 FRONTEND_PID=$!
 
@@ -80,7 +80,7 @@ cat <<EOF
  Admin login: see admin-credentials.txt
  Logs:      backend.log / frontend.log (in this directory)
  Press Ctrl+C to stop the backend and frontend.
- (Postgres keeps running — stop it with:
+ (Postgres keeps running - stop it with:
     cd backend && docker compose down)
 ==========================================================
 

@@ -139,6 +139,7 @@ export interface AssignmentRequest {
   title: string
   description: string
   dueDate: string
+  maxPoints: number | null
   subjectId: number
 }
 

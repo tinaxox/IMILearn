@@ -8,134 +8,33 @@
 
  :: Spring Boot ::                (v4.1.1)
 
-2026-09-29T20:02:43.206+02:00  INFO 27524 --- [imilearn] [           main] com.imilearn.IMILearnApplication         : Starting IMILearnApplication using Java 25.0.2 with PID 27524 (C:\Users\ralev\Documents\WEB2\IMILearn\backend\target\classes started by ralev in C:\Users\ralev\Documents\WEB2\IMILearn\backend)
-2026-09-29T20:02:43.210+02:00  INFO 27524 --- [imilearn] [           main] com.imilearn.IMILearnApplication         : No active profile set, falling back to 1 default profile: "default"
-2026-09-29T20:02:44.395+02:00  INFO 27524 --- [imilearn] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-09-29T20:02:44.618+02:00  INFO 27524 --- [imilearn] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 199 ms. Found 17 JPA repository interfaces.
-2026-09-29T20:02:45.388+02:00  INFO 27524 --- [imilearn] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
-2026-09-29T20:02:45.405+02:00  INFO 27524 --- [imilearn] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-09-29T20:02:45.405+02:00  INFO 27524 --- [imilearn] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
-2026-09-29T20:02:45.496+02:00  INFO 27524 --- [imilearn] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 2225 ms
-2026-09-29T20:02:45.618+02:00  INFO 27524 --- [imilearn] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-09-29T20:02:45.923+02:00  INFO 27524 --- [imilearn] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@58c42c8c
-2026-09-29T20:02:45.926+02:00  INFO 27524 --- [imilearn] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-09-29T20:02:46.119+02:00  INFO 27524 --- [imilearn] [           main] liquibase.database                       : Set default schema name to public
-2026-09-29T20:02:47.713+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Creating database changelog table with name: public.databasechangelog
-2026-09-29T20:02:47.775+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Reading from public.databasechangelog
-2026-09-29T20:02:47.966+02:00  INFO 27524 --- [imilearn] [           main] liquibase.snapshot                       : Creating snapshot
-2026-09-29T20:02:48.325+02:00  INFO 27524 --- [imilearn] [           main] liquibase.lockservice                    : Successfully acquired change log lock
-2026-09-29T20:02:48.329+02:00  INFO 27524 --- [imilearn] [           main] liquibase.command                        : Using deploymentId: 0704965601
-2026-09-29T20:02:48.332+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Reading from public.databasechangelog
-2026-09-29T20:02:48.400+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/001-create-users-table.yaml::001-create-users-table::imilearn
-2026-09-29T20:02:48.427+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Table users created
-2026-09-29T20:02:48.431+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/001-create-users-table.yaml::001-create-users-table::imilearn ran successfully in 29ms
-2026-09-29T20:02:48.442+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/002-create-subjects-table.yaml::002-create-subjects-table::imilearn
-2026-09-29T20:02:48.454+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Table subjects created
-2026-09-29T20:02:48.456+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/002-create-subjects-table.yaml::002-create-subjects-table::imilearn ran successfully in 13ms
-2026-09-29T20:02:48.462+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/003-create-user-subjects-table.yaml::003-create-user-subjects-table::imilearn
-2026-09-29T20:02:48.473+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Table user_subjects created
-2026-09-29T20:02:48.481+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Unique constraint added to user_subjects(user_id, subject_id)
-2026-09-29T20:02:48.484+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/003-create-user-subjects-table.yaml::003-create-user-subjects-table::imilearn ran successfully in 22ms
-2026-09-29T20:02:48.490+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/004-create-materials-table.yaml::004-create-materials-table::imilearn
-2026-09-29T20:02:48.506+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Table materials created
-2026-09-29T20:02:48.508+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/004-create-materials-table.yaml::004-create-materials-table::imilearn ran successfully in 18ms
-2026-09-29T20:02:48.514+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/005-create-assignments-table.yaml::005-create-assignments-table::imilearn
-2026-09-29T20:02:48.530+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Table assignments created
-2026-09-29T20:02:48.533+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/005-create-assignments-table.yaml::005-create-assignments-table::imilearn ran successfully in 18ms
-2026-09-29T20:02:48.538+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/006-create-assignment-submissions-table.yaml::006-create-assignment-submissions-table::imilearn
-2026-09-29T20:02:48.551+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Table assignment_submissions created
-2026-09-29T20:02:48.557+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Unique constraint added to assignment_submissions(assignment_id, student_id)
-2026-09-29T20:02:48.560+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/006-create-assignment-submissions-table.yaml::006-create-assignment-submissions-table::imilearn ran successfully in 22ms
-2026-09-29T20:02:48.567+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/007-create-submission-files-table.yaml::007-create-submission-files-table::imilearn
-2026-09-29T20:02:48.588+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Table submission_files created
-2026-09-29T20:02:48.591+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/007-create-submission-files-table.yaml::007-create-submission-files-table::imilearn ran successfully in 24ms
-2026-09-29T20:02:48.597+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/008-add-recently-viewed-material-ids-to-users.yaml::008-add-recently-viewed-material-ids-to-users::imilearn
-2026-09-29T20:02:48.602+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Columns recently_viewed_material_ids(BIGINT[]) added to users
-2026-09-29T20:02:48.605+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/008-add-recently-viewed-material-ids-to-users.yaml::008-add-recently-viewed-material-ids-to-users::imilearn ran successfully in 8ms
-2026-09-29T20:02:48.612+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/009-create-exams-table.yaml::009-create-exams-table::imilearn
-2026-09-29T20:02:48.626+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Table exams created
-2026-09-29T20:02:48.629+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/009-create-exams-table.yaml::009-create-exams-table::imilearn ran successfully in 17ms
-2026-09-29T20:02:48.634+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/010-create-quizzes-table.yaml::010-create-quizzes-table::imilearn
-2026-09-29T20:02:48.651+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Table quizzes created
-2026-09-29T20:02:48.653+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/010-create-quizzes-table.yaml::010-create-quizzes-table::imilearn ran successfully in 19ms
-2026-09-29T20:02:48.662+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/011-create-quiz-submissions-table.yaml::011-create-quiz-submissions-table::imilearn
-2026-09-29T20:02:48.680+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Table quiz_submissions created
-2026-09-29T20:02:48.683+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/011-create-quiz-submissions-table.yaml::011-create-quiz-submissions-table::imilearn ran successfully in 20ms
-2026-09-29T20:02:48.688+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/012-create-material-questions-table.yaml::012-create-material-questions-table::imilearn
-2026-09-29T20:02:48.706+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Table material_questions created
-2026-09-29T20:02:48.708+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/012-create-material-questions-table.yaml::012-create-material-questions-table::imilearn ran successfully in 20ms
-2026-09-29T20:02:48.713+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/013-create-quiz-question-generation-requests-table.yaml::013-create-quiz-question-generation-requests-table::imilearn
-2026-09-29T20:02:48.731+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Table quiz_question_generation_requests created
-2026-09-29T20:02:48.733+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/013-create-quiz-question-generation-requests-table.yaml::013-create-quiz-question-generation-requests-table::imilearn ran successfully in 20ms
-2026-09-29T20:02:48.739+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/014-create-quiz-question-material-generations-table.yaml::014-create-quiz-question-material-generations-table::imilearn
-2026-09-29T20:02:48.760+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Table quiz_question_material_generations created
-2026-09-29T20:02:48.763+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/014-create-quiz-question-material-generations-table.yaml::014-create-quiz-question-material-generations-table::imilearn ran successfully in 24ms
-2026-09-29T20:02:48.769+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/015-create-exam-grades-table.yaml::015-create-exam-grades-table::imilearn
-2026-09-29T20:02:48.782+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Table exam_grades created
-2026-09-29T20:02:48.788+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Unique constraint added to exam_grades(exam_id, student_id)
-2026-09-29T20:02:48.791+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/015-create-exam-grades-table.yaml::015-create-exam-grades-table::imilearn ran successfully in 22ms
-2026-09-29T20:02:48.796+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/016-add-points-to-assignment-submissions.yaml::016-add-points-to-assignment-submissions::imilearn
-2026-09-29T20:02:48.800+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Columns points(DOUBLE PRECISION) added to assignment_submissions
-2026-09-29T20:02:48.802+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/016-add-points-to-assignment-submissions.yaml::016-add-points-to-assignment-submissions::imilearn ran successfully in 6ms
-2026-09-29T20:02:48.807+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/017-add-text-to-assignment-submissions.yaml::017-add-text-to-assignment-submissions::imilearn
-2026-09-29T20:02:48.815+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Columns text_content(TEXT) added to assignment_submissions
-2026-09-29T20:02:48.817+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/017-add-text-to-assignment-submissions.yaml::017-add-text-to-assignment-submissions::imilearn ran successfully in 9ms
-2026-09-29T20:02:48.823+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/018-add-exam-metadata.yaml::018-add-exam-metadata::imilearn
-2026-09-29T20:02:48.830+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Columns type(VARCHAR(32)),max_points(DOUBLE PRECISION) added to exams
-2026-09-29T20:02:48.832+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/018-add-exam-metadata.yaml::018-add-exam-metadata::imilearn ran successfully in 9ms
-2026-09-29T20:02:48.837+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/019-add-material-category.yaml::019-add-material-category::imilearn
-2026-09-29T20:02:48.842+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Columns category(VARCHAR(32)) added to materials
-2026-09-29T20:02:48.844+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/019-add-material-category.yaml::019-add-material-category::imilearn ran successfully in 6ms
-2026-09-29T20:02:48.848+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/020-add-student-profile-fields.yaml::020-add-student-profile-fields::imilearn
-2026-09-29T20:02:48.857+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Columns espb(INTEGER),score(DOUBLE PRECISION),study_year(INTEGER),student_index(VARCHAR(64)) added to users
-2026-09-29T20:02:48.859+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/020-add-student-profile-fields.yaml::020-add-student-profile-fields::imilearn ran successfully in 10ms
-2026-09-29T20:02:48.864+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/021-make-exam-max-points-optional.yaml::021-make-exam-max-points-optional::imilearn
-2026-09-29T20:02:48.871+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Default value dropped from exams.max_points
-2026-09-29T20:02:48.873+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Null constraint dropped from exams.max_points
-2026-09-29T20:02:48.876+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/021-make-exam-max-points-optional.yaml::021-make-exam-max-points-optional::imilearn ran successfully in 12ms
-2026-09-29T20:02:48.881+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/022-add-final-exam-grade.yaml::022-add-final-exam-grade::imilearn
-2026-09-29T20:02:48.885+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Null constraint dropped from exam_grades.points
-2026-09-29T20:02:48.887+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Columns grade(INTEGER) added to exam_grades
-2026-09-29T20:02:48.904+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Custom SQL executed
-2026-09-29T20:02:48.907+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Custom SQL executed
-2026-09-29T20:02:48.909+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/022-add-final-exam-grade.yaml::022-add-final-exam-grade::imilearn ran successfully in 28ms
-2026-09-29T20:02:48.914+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/023-preserve-final-exam-points.yaml::023-preserve-final-exam-points::imilearn
-2026-09-29T20:02:48.922+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Custom SQL executed
-2026-09-29T20:02:48.924+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/023-preserve-final-exam-points.yaml::023-preserve-final-exam-points::imilearn ran successfully in 9ms
-2026-09-29T20:02:48.931+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/024-create-forum-threads-table.yaml::024-create-forum-threads-table::imilearn
-2026-09-29T20:02:48.948+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Table forum_threads created
-2026-09-29T20:02:48.951+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/024-create-forum-threads-table.yaml::024-create-forum-threads-table::imilearn ran successfully in 20ms
-2026-09-29T20:02:48.956+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/025-create-forum-posts-table.yaml::025-create-forum-posts-table::imilearn
-2026-09-29T20:02:48.972+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Table forum_posts created
-2026-09-29T20:02:48.975+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/025-create-forum-posts-table.yaml::025-create-forum-posts-table::imilearn ran successfully in 18ms
-2026-09-29T20:02:48.980+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/026-create-notifications-table.yaml::026-create-notifications-table::imilearn
-2026-09-29T20:02:48.997+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Table notifications created
-2026-09-29T20:02:49.000+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/026-create-notifications-table.yaml::026-create-notifications-table::imilearn ran successfully in 20ms
-2026-09-29T20:02:49.006+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/027-add-attachment-to-forum-threads.yaml::027-add-attachment-to-forum-threads::imilearn
-2026-09-29T20:02:49.015+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Columns attachment_storage_key(VARCHAR),attachment_file_name(VARCHAR),attachment_content_type(VARCHAR),attachment_size_bytes(BIGINT) added to forum_threads
-2026-09-29T20:02:49.017+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/027-add-attachment-to-forum-threads.yaml::027-add-attachment-to-forum-threads::imilearn ran successfully in 11ms
-2026-09-29T20:02:49.022+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/028-add-max-points-to-assignments.yaml::028-add-max-points-to-assignments::imilearn
-2026-09-29T20:02:49.026+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Columns max_points(DOUBLE PRECISION) added to assignments
-2026-09-29T20:02:49.028+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/028-add-max-points-to-assignments.yaml::028-add-max-points-to-assignments::imilearn ran successfully in 6ms
-2026-09-29T20:02:49.033+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Running Changeset: db/changelog/changes/029-create-quiz-attempts-table.yaml::029-create-quiz-attempts-table::imilearn
-2026-09-29T20:02:49.049+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Table quiz_attempts created
-2026-09-29T20:02:49.055+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : Unique constraint added to quiz_attempts(quiz_id, user_id)
-2026-09-29T20:02:49.058+02:00  INFO 27524 --- [imilearn] [           main] liquibase.changelog                      : ChangeSet db/changelog/changes/029-create-quiz-attempts-table.yaml::029-create-quiz-attempts-table::imilearn ran successfully in 25ms
-2026-09-29T20:02:49.069+02:00  INFO 27524 --- [imilearn] [           main] liquibase.util                           : UPDATE SUMMARY
-2026-09-29T20:02:49.069+02:00  INFO 27524 --- [imilearn] [           main] liquibase.util                           : Run:                         29
-2026-09-29T20:02:49.069+02:00  INFO 27524 --- [imilearn] [           main] liquibase.util                           : Previously run:               0
-2026-09-29T20:02:49.069+02:00  INFO 27524 --- [imilearn] [           main] liquibase.util                           : Filtered out:                 0
-2026-09-29T20:02:49.069+02:00  INFO 27524 --- [imilearn] [           main] liquibase.util                           : -------------------------------
-2026-09-29T20:02:49.069+02:00  INFO 27524 --- [imilearn] [           main] liquibase.util                           : Total change sets:           29
-2026-09-29T20:02:49.070+02:00  INFO 27524 --- [imilearn] [           main] liquibase.util                           : Update summary generated
-2026-09-29T20:02:49.072+02:00  INFO 27524 --- [imilearn] [           main] liquibase.command                        : Update command completed successfully.
-2026-09-29T20:02:49.073+02:00  INFO 27524 --- [imilearn] [           main] liquibase.ui                             : Liquibase: Update has been successful. Rows affected: 0
-2026-09-29T20:02:49.080+02:00  INFO 27524 --- [imilearn] [           main] liquibase.lockservice                    : Successfully released change log lock
-2026-09-29T20:02:49.083+02:00  INFO 27524 --- [imilearn] [           main] liquibase.command                        : Command execution complete
-2026-09-29T20:02:49.218+02:00  INFO 27524 --- [imilearn] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-09-29T20:02:49.303+02:00  INFO 27524 --- [imilearn] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.5.Final
-2026-09-29T20:02:49.901+02:00  INFO 27524 --- [imilearn] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-09-29T20:02:50.049+02:00  INFO 27524 --- [imilearn] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2026-09-30T01:12:02.700+02:00  INFO 27600 --- [imilearn] [           main] com.imilearn.IMILearnApplication         : Starting IMILearnApplication using Java 25.0.2 with PID 27600 (C:\Users\ralev\Documents\WEB2\IMILearn\backend\target\classes started by ralev in C:\Users\ralev\Documents\WEB2\IMILearn\backend)
+2026-09-30T01:12:02.705+02:00  INFO 27600 --- [imilearn] [           main] com.imilearn.IMILearnApplication         : No active profile set, falling back to 1 default profile: "default"
+2026-09-30T01:12:04.288+02:00  INFO 27600 --- [imilearn] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-30T01:12:04.463+02:00  INFO 27600 --- [imilearn] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 157 ms. Found 17 JPA repository interfaces.
+2026-09-30T01:12:05.687+02:00  INFO 27600 --- [imilearn] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-09-30T01:12:05.717+02:00  INFO 27600 --- [imilearn] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-30T01:12:05.718+02:00  INFO 27600 --- [imilearn] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-09-30T01:12:05.863+02:00  INFO 27600 --- [imilearn] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 3077 ms
+2026-09-30T01:12:06.010+02:00  INFO 27600 --- [imilearn] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-09-30T01:12:06.233+02:00  INFO 27600 --- [imilearn] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@70b33256
+2026-09-30T01:12:06.235+02:00  INFO 27600 --- [imilearn] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-09-30T01:12:06.419+02:00  INFO 27600 --- [imilearn] [           main] liquibase.database                       : Set default schema name to public
+2026-09-30T01:12:07.672+02:00  INFO 27600 --- [imilearn] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+2026-09-30T01:12:07.999+02:00  INFO 27600 --- [imilearn] [           main] liquibase.ui                             : Database is up to date, no changesets to execute
+2026-09-30T01:12:08.004+02:00  INFO 27600 --- [imilearn] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+2026-09-30T01:12:08.028+02:00  INFO 27600 --- [imilearn] [           main] liquibase.util                           : UPDATE SUMMARY
+2026-09-30T01:12:08.028+02:00  INFO 27600 --- [imilearn] [           main] liquibase.util                           : Run:                          0
+2026-09-30T01:12:08.028+02:00  INFO 27600 --- [imilearn] [           main] liquibase.util                           : Previously run:              29
+2026-09-30T01:12:08.028+02:00  INFO 27600 --- [imilearn] [           main] liquibase.util                           : Filtered out:                 0
+2026-09-30T01:12:08.028+02:00  INFO 27600 --- [imilearn] [           main] liquibase.util                           : -------------------------------
+2026-09-30T01:12:08.029+02:00  INFO 27600 --- [imilearn] [           main] liquibase.util                           : Total change sets:           29
+2026-09-30T01:12:08.030+02:00  INFO 27600 --- [imilearn] [           main] liquibase.util                           : Update summary generated
+2026-09-30T01:12:08.031+02:00  INFO 27600 --- [imilearn] [           main] liquibase.command                        : Command execution complete
+2026-09-30T01:12:08.206+02:00  INFO 27600 --- [imilearn] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-09-30T01:12:08.311+02:00  INFO 27600 --- [imilearn] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.5.Final
+2026-09-30T01:12:09.178+02:00  INFO 27600 --- [imilearn] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-30T01:12:09.577+02:00  INFO 27600 --- [imilearn] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [jdbc:postgresql://localhost:5432/imilearn]
 	Database driver: PostgreSQL JDBC Driver
 	Database dialect: PostgreSQLDialect
@@ -147,26 +46,179 @@
 	Pool: DataSourceConnectionProvider
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2026-09-29T20:02:51.685+02:00  INFO 27524 --- [imilearn] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-09-29T20:02:51.749+02:00  INFO 27524 --- [imilearn] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-09-29T20:02:51.818+02:00  INFO 27524 --- [imilearn] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-09-29T20:02:54.133+02:00  INFO 27524 --- [imilearn] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
-2026-09-29T20:02:55.111+02:00  INFO 27524 --- [imilearn] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
-2026-09-29T20:02:55.111+02:00  INFO 27524 --- [imilearn] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@5b8bc51b]]
-2026-09-29T20:02:55.112+02:00  INFO 27524 --- [imilearn] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
-2026-09-29T20:02:55.124+02:00  INFO 27524 --- [imilearn] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
-2026-09-29T20:02:55.132+02:00  INFO 27524 --- [imilearn] [           main] com.imilearn.IMILearnApplication         : Started IMILearnApplication in 12.602 seconds (process running for 13.299)
-2026-09-29T20:02:55.288+02:00  INFO 27524 --- [imilearn] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-09-29T20:02:55.288+02:00  INFO 27524 --- [imilearn] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-09-29T20:02:55.290+02:00  INFO 27524 --- [imilearn] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
-2026-09-29T20:02:55.609+02:00  WARN 27524 --- [imilearn] [           main] com.imilearn.user.AdminBootstrapRunner   : No admin user existed, created default admin 'admin@imilearn.com'. Change its password immediately.
-2026-09-29T20:03:55.108+02:00  INFO 27524 --- [imilearn] [essageBroker-12] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 10 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(10)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 30, active threads = 0, queued tasks = 0, completed tasks = 30], outboundChannel[pool size = 10, active threads = 0, queued tasks = 0, completed tasks = 10], sockJsScheduler[pool size = 16, active threads = 1, queued tasks = 4, completed tasks = 48]
-2026-09-29T20:07:29.730+02:00  WARN 27524 --- [imilearn] [nio-8080-exec-8] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+2026-09-30T01:12:11.487+02:00  INFO 27600 --- [imilearn] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-30T01:12:11.566+02:00  INFO 27600 --- [imilearn] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-30T01:12:11.655+02:00  INFO 27600 --- [imilearn] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-09-30T01:12:14.412+02:00  INFO 27600 --- [imilearn] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2026-09-30T01:12:15.397+02:00  INFO 27600 --- [imilearn] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2026-09-30T01:12:15.397+02:00  INFO 27600 --- [imilearn] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@41d8e94]]
+2026-09-30T01:12:15.398+02:00  INFO 27600 --- [imilearn] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2026-09-30T01:12:15.411+02:00  INFO 27600 --- [imilearn] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-09-30T01:12:15.418+02:00  INFO 27600 --- [imilearn] [           main] com.imilearn.IMILearnApplication         : Started IMILearnApplication in 13.465 seconds (process running for 14.455)
+2026-09-30T01:12:15.626+02:00  INFO 27600 --- [imilearn] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-30T01:12:15.627+02:00  INFO 27600 --- [imilearn] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-30T01:12:15.628+02:00  INFO 27600 --- [imilearn] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-09-30T01:12:49.256+02:00  WARN 27600 --- [imilearn] [nio-8080-exec-2] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
 	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
 	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
 
-2026-09-29T21:16:41.525+02:00  INFO 27524 --- [imilearn] [essageBroker-15] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 45 total, 0 closed abnormally (0 connect failure, 0 send limit, 1 transport error)], stompSubProtocol[processed CONNECT(45)-CONNECTED(1)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 3, active threads = 0, queued tasks = 0, completed tasks = 141], outboundChannel[pool size = 1, active threads = 0, queued tasks = 0, completed tasks = 46], sockJsScheduler[pool size = 16, active threads = 4, queued tasks = 1, completed tasks = 777]
-2026-09-29T21:16:43.278+02:00  WARN 27524 --- [imilearn] [l-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h3m27s218ms887µs100ns).
-2026-09-29T21:46:40.032+02:00  INFO 27524 --- [imilearn] [MessageBroker-5] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[1 current WS(1)-HttpStream(0)-HttpPoll(0), 46 total, 0 closed abnormally (0 connect failure, 0 send limit, 1 transport error)], stompSubProtocol[processed CONNECT(46)-CONNECTED(2)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 147], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 47], sockJsScheduler[pool size = 16, active threads = 1, queued tasks = 5, completed tasks = 2802]
-2026-09-29T21:47:35.859+02:00  WARN 27524 --- [imilearn] [l-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=54s29ms171µs600ns).
-2026-09-29T22:16:40.033+02:00  INFO 27524 --- [imilearn] [essageBroker-13] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[1 current WS(1)-HttpStream(0)-HttpPoll(0), 49 total, 0 closed abnormally (0 connect failure, 0 send limit, 2 transport error)], stompSubProtocol[processed CONNECT(49)-CONNECTED(5)-DISCONNECT(1)], stompBrokerRelay[null], inboundChannel[pool size = 12, active threads = 0, queued tasks = 0, completed tasks = 201], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 54], sockJsScheduler[pool size = 16, active threads = 1, queued tasks = 5, completed tasks = 4295]
+2026-09-30T01:13:15.396+02:00  INFO 27600 --- [imilearn] [essageBroker-16] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[1 current WS(1)-HttpStream(0)-HttpPoll(0), 1 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(1)-CONNECTED(1)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 6, active threads = 0, queued tasks = 0, completed tasks = 6], outboundChannel[pool size = 1, active threads = 0, queued tasks = 0, completed tasks = 1], sockJsScheduler[pool size = 16, active threads = 1, queued tasks = 5, completed tasks = 43]
+2026-09-30T01:16:51.780+02:00  WARN 27600 --- [imilearn] [l-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=45s376ms324µs600ns).
+2026-09-30T01:20:43.689+02:00  WARN 27600 --- [imilearn] [MessageBroker-6] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@70b33256 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-09-30T01:20:43.689+02:00  WARN 27600 --- [imilearn] [MessageBroker-4] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@29895edc (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-09-30T01:20:43.744+02:00  WARN 27600 --- [imilearn] [MessageBroker-6] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 0, SQLState: 08003
+2026-09-30T01:20:43.744+02:00  WARN 27600 --- [imilearn] [MessageBroker-4] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 0, SQLState: 08003
+2026-09-30T01:20:43.745+02:00  WARN 27600 --- [imilearn] [MessageBroker-6] org.hibernate.orm.jdbc.error             : HikariPool-1 - Connection is not available, request timed out after 86649ms (total=9, active=2, idle=7, waiting=0)
+2026-09-30T01:20:43.745+02:00  WARN 27600 --- [imilearn] [MessageBroker-4] org.hibernate.orm.jdbc.error             : HikariPool-1 - Connection is not available, request timed out after 86676ms (total=8, active=1, idle=7, waiting=0)
+2026-09-30T01:20:43.745+02:00  WARN 27600 --- [imilearn] [MessageBroker-6] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 0, SQLState: 08003
+2026-09-30T01:20:43.745+02:00  WARN 27600 --- [imilearn] [MessageBroker-4] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 0, SQLState: 08003
+2026-09-30T01:20:43.745+02:00  WARN 27600 --- [imilearn] [MessageBroker-6] org.hibernate.orm.jdbc.error             : HikariPool-1 - Connection is not available, request timed out after 86649ms (total=9, active=2, idle=7, waiting=0)
+2026-09-30T01:20:43.745+02:00  WARN 27600 --- [imilearn] [MessageBroker-4] org.hibernate.orm.jdbc.error             : HikariPool-1 - Connection is not available, request timed out after 86676ms (total=8, active=1, idle=7, waiting=0)
+2026-09-30T01:20:43.799+02:00 ERROR 27600 --- [imilearn] [MessageBroker-6] o.s.s.s.TaskUtils$LoggingErrorHandler    : Unexpected error occurred in scheduled task
+
+org.springframework.transaction.CannotCreateTransactionException: Could not open JPA EntityManager for transaction
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:457) ~[spring-orm-7.0.9.jar:7.0.9]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:532) ~[spring-tx-7.0.9.jar:7.0.9]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:405) ~[spring-tx-7.0.9.jar:7.0.9]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:628) ~[spring-tx-7.0.9.jar:7.0.9]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:365) ~[spring-tx-7.0.9.jar:7.0.9]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:130) ~[spring-tx-7.0.9.jar:7.0.9]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-7.0.9.jar:7.0.9]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:719) ~[spring-aop-7.0.9.jar:7.0.9]
+	at com.imilearn.quiz.QuizGenerationScheduler$$SpringCGLIB$$0.recoverStaleRunning(<generated>) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.runInternal(ScheduledMethodRunnable.java:128) ~[spring-context-7.0.9.jar:7.0.9]
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.lambda$run$1(ScheduledMethodRunnable.java:122) ~[spring-context-7.0.9.jar:7.0.9]
+	at io.micrometer.observation.Observation.observe(Observation.java:569) ~[micrometer-observation-1.17.1.jar:1.17.1]
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:122) ~[spring-context-7.0.9.jar:7.0.9]
+	at org.springframework.scheduling.config.Task$OutcomeTrackingRunnable.run(Task.java:88) ~[spring-context-7.0.9.jar:7.0.9]
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54) ~[spring-context-7.0.9.jar:7.0.9]
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:545) ~[na:na]
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:369) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:310) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1474) ~[na:na]
+Caused by: org.hibernate.exception.JDBCConnectionException: Unable to acquire JDBC Connection [HikariPool-1 - Connection is not available, request timed out after 86649ms (total=9, active=2, idle=7, waiting=0)] [n/a]
+	at org.hibernate.exception.internal.SQLExceptionTypeDelegate.convert(SQLExceptionTypeDelegate.java:49) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:34) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:115) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:101) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquire(LogicalConnectionManagedImpl.java:190) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquireConnectionIfNeeded(LogicalConnectionManagedImpl.java:87) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getPhysicalConnection(LogicalConnectionManagedImpl.java:126) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getConnectionForTransactionManagement(LogicalConnectionManagedImpl.java:281) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.begin(LogicalConnectionManagedImpl.java:290) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.begin(JdbcResourceLocalTransactionCoordinatorImpl.java:226) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.engine.transaction.internal.TransactionImpl.begin(TransactionImpl.java:75) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.beginTransaction(HibernateJpaDialect.java:147) ~[spring-orm-7.0.9.jar:7.0.9]
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:411) ~[spring-orm-7.0.9.jar:7.0.9]
+	... 22 common frames omitted
+Caused by: java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 86649ms (total=9, active=2, idle=7, waiting=0)
+	at com.zaxxer.hikari.pool.HikariPool.createTimeoutException(HikariPool.java:714) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:184) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:142) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:127) ~[HikariCP-7.0.2.jar:na]
+	at org.hibernate.engine.jdbc.connections.internal.DataSourceConnectionProvider.getConnection(DataSourceConnectionProvider.java:149) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.internal.NonContextualJdbcConnectionAccess.obtainConnection(NonContextualJdbcConnectionAccess.java:62) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquire(LogicalConnectionManagedImpl.java:187) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	... 30 common frames omitted
+Caused by: org.postgresql.util.PSQLException: This connection has been closed.
+	at org.postgresql.jdbc.PgConnection.checkClosed(PgConnection.java:1050) ~[postgresql-42.7.13.jar:42.7.13]
+	at org.postgresql.jdbc.PgConnection.setNetworkTimeout(PgConnection.java:1791) ~[postgresql-42.7.13.jar:42.7.13]
+	at com.zaxxer.hikari.pool.PoolBase.setNetworkTimeout(PoolBase.java:585) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.isConnectionDead(PoolBase.java:177) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:166) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:142) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:127) ~[HikariCP-7.0.2.jar:na]
+	at org.hibernate.engine.jdbc.connections.internal.DataSourceConnectionProvider.getConnection(DataSourceConnectionProvider.java:149) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.internal.NonContextualJdbcConnectionAccess.obtainConnection(NonContextualJdbcConnectionAccess.java:62) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquire(LogicalConnectionManagedImpl.java:187) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquireConnectionIfNeeded(LogicalConnectionManagedImpl.java:87) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getPhysicalConnection(LogicalConnectionManagedImpl.java:126) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getConnectionForTransactionManagement(LogicalConnectionManagedImpl.java:281) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.begin(LogicalConnectionManagedImpl.java:290) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.begin(JdbcResourceLocalTransactionCoordinatorImpl.java:226) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.engine.transaction.internal.TransactionImpl.begin(TransactionImpl.java:75) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.beginTransaction(HibernateJpaDialect.java:147) ~[spring-orm-7.0.9.jar:7.0.9]
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:411) ~[spring-orm-7.0.9.jar:7.0.9]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:532) ~[spring-tx-7.0.9.jar:7.0.9]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:405) ~[spring-tx-7.0.9.jar:7.0.9]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:628) ~[spring-tx-7.0.9.jar:7.0.9]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:365) ~[spring-tx-7.0.9.jar:7.0.9]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:130) ~[spring-tx-7.0.9.jar:7.0.9]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-7.0.9.jar:7.0.9]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:719) ~[spring-aop-7.0.9.jar:7.0.9]
+	at com.imilearn.quiz.QuizGenerationScheduler$$SpringCGLIB$$0.dispatchPendingMaterials(<generated>) ~[classes/:na]
+	... 14 common frames omitted
+
+2026-09-30T01:20:43.815+02:00 ERROR 27600 --- [imilearn] [MessageBroker-4] o.s.s.s.TaskUtils$LoggingErrorHandler    : Unexpected error occurred in scheduled task
+
+org.springframework.transaction.CannotCreateTransactionException: Could not open JPA EntityManager for transaction
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:457) ~[spring-orm-7.0.9.jar:7.0.9]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:532) ~[spring-tx-7.0.9.jar:7.0.9]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:405) ~[spring-tx-7.0.9.jar:7.0.9]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:628) ~[spring-tx-7.0.9.jar:7.0.9]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:365) ~[spring-tx-7.0.9.jar:7.0.9]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:130) ~[spring-tx-7.0.9.jar:7.0.9]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-7.0.9.jar:7.0.9]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:719) ~[spring-aop-7.0.9.jar:7.0.9]
+	at com.imilearn.quiz.QuizGenerationScheduler$$SpringCGLIB$$0.dispatchPendingMaterials(<generated>) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.runInternal(ScheduledMethodRunnable.java:128) ~[spring-context-7.0.9.jar:7.0.9]
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.lambda$run$1(ScheduledMethodRunnable.java:122) ~[spring-context-7.0.9.jar:7.0.9]
+	at io.micrometer.observation.Observation.observe(Observation.java:569) ~[micrometer-observation-1.17.1.jar:1.17.1]
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:122) ~[spring-context-7.0.9.jar:7.0.9]
+	at org.springframework.scheduling.config.Task$OutcomeTrackingRunnable.run(Task.java:88) ~[spring-context-7.0.9.jar:7.0.9]
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54) ~[spring-context-7.0.9.jar:7.0.9]
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:545) ~[na:na]
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:369) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:310) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1474) ~[na:na]
+Caused by: org.hibernate.exception.JDBCConnectionException: Unable to acquire JDBC Connection [HikariPool-1 - Connection is not available, request timed out after 86676ms (total=8, active=1, idle=7, waiting=0)] [n/a]
+	at org.hibernate.exception.internal.SQLExceptionTypeDelegate.convert(SQLExceptionTypeDelegate.java:49) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:34) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:115) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:101) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquire(LogicalConnectionManagedImpl.java:190) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquireConnectionIfNeeded(LogicalConnectionManagedImpl.java:87) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getPhysicalConnection(LogicalConnectionManagedImpl.java:126) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getConnectionForTransactionManagement(LogicalConnectionManagedImpl.java:281) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.begin(LogicalConnectionManagedImpl.java:290) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.begin(JdbcResourceLocalTransactionCoordinatorImpl.java:226) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.engine.transaction.internal.TransactionImpl.begin(TransactionImpl.java:75) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.beginTransaction(HibernateJpaDialect.java:147) ~[spring-orm-7.0.9.jar:7.0.9]
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:411) ~[spring-orm-7.0.9.jar:7.0.9]
+	... 22 common frames omitted
+Caused by: java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 86676ms (total=8, active=1, idle=7, waiting=0)
+	at com.zaxxer.hikari.pool.HikariPool.createTimeoutException(HikariPool.java:714) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:184) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:142) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:127) ~[HikariCP-7.0.2.jar:na]
+	at org.hibernate.engine.jdbc.connections.internal.DataSourceConnectionProvider.getConnection(DataSourceConnectionProvider.java:149) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.internal.NonContextualJdbcConnectionAccess.obtainConnection(NonContextualJdbcConnectionAccess.java:62) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquire(LogicalConnectionManagedImpl.java:187) ~[hibernate-core-7.4.5.Final.jar:7.4.5.Final]
+	... 30 common frames omitted
+Caused by: org.postgresql.util.PSQLException: This connection has been closed.
+	at org.postgresql.jdbc.PgConnection.checkClosed(PgConnection.java:1050) ~[postgresql-42.7.13.jar:42.7.13]
+	at org.postgresql.jdbc.PgConnection.setNetworkTimeout(PgConnection.java:1791) ~[postgresql-42.7.13.jar:42.7.13]
+	at com.zaxxer.hikari.pool.PoolBase.setNetworkTimeout(PoolBase.java:585) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.isConnectionDead(PoolBase.java:177) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:166) ~[HikariCP-7.0.2.jar:na]
+	... 35 common frames omitted
+
+2026-09-30T01:20:48.310+02:00  WARN 27600 --- [imilearn] [l-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m56s495ms369µs100ns).
+2026-09-30T01:37:39.725+02:00  WARN 27600 --- [imilearn] [l-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=10m21s301ms896µs).
+2026-09-30T01:43:15.397+02:00  INFO 27600 --- [imilearn] [essageBroker-14] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[1 current WS(1)-HttpStream(0)-HttpPoll(0), 6 total, 0 closed abnormally (0 connect failure, 0 send limit, 3 transport error)], stompSubProtocol[processed CONNECT(6)-CONNECTED(6)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 51], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 11], sockJsScheduler[pool size = 16, active threads = 1, queued tasks = 5, completed tasks = 1105]
+2026-09-30T08:03:12.052+02:00  WARN 27600 --- [imilearn] [l-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=6h18m32s316ms186µs700ns).
+2026-09-30T08:03:12.751+02:00  INFO 27600 --- [imilearn] [MessageBroker-8] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 6 total, 0 closed abnormally (0 connect failure, 0 send limit, 4 transport error)], stompSubProtocol[processed CONNECT(6)-CONNECTED(6)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 3, active threads = 0, queued tasks = 0, completed tasks = 54], outboundChannel[pool size = 1, active threads = 0, queued tasks = 0, completed tasks = 12], sockJsScheduler[pool size = 16, active threads = 5, queued tasks = 0, completed tasks = 1256]
+2026-09-30T08:51:10.571+02:00  INFO 27600 --- [imilearn] [MessageBroker-9] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 7 total, 0 closed abnormally (0 connect failure, 0 send limit, 4 transport error)], stompSubProtocol[processed CONNECT(7)-CONNECTED(7)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 12, active threads = 0, queued tasks = 0, completed tasks = 63], outboundChannel[pool size = 3, active threads = 0, queued tasks = 0, completed tasks = 14], sockJsScheduler[pool size = 16, active threads = 5, queued tasks = 0, completed tasks = 5822]
+2026-09-30T08:51:33.190+02:00  WARN 27600 --- [imilearn] [l-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=47m51s137ms436µs100ns).
+2026-09-30T09:06:25.423+02:00  WARN 27600 --- [imilearn] [l-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=14m52s232ms748µs200ns).
+2026-09-30T09:21:10.575+02:00  INFO 27600 --- [imilearn] [essageBroker-15] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 7 total, 0 closed abnormally (0 connect failure, 0 send limit, 4 transport error)], stompSubProtocol[processed CONNECT(7)-CONNECTED(7)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 63], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 14], sockJsScheduler[pool size = 16, active threads = 1, queued tasks = 4, completed tasks = 7258]
+2026-09-30T09:51:10.577+02:00  INFO 27600 --- [imilearn] [MessageBroker-8] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 7 total, 0 closed abnormally (0 connect failure, 0 send limit, 4 transport error)], stompSubProtocol[processed CONNECT(7)-CONNECTED(7)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 63], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 14], sockJsScheduler[pool size = 16, active threads = 1, queued tasks = 4, completed tasks = 8696]
+2026-09-30T10:21:10.579+02:00  INFO 27600 --- [imilearn] [essageBroker-13] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[1 current WS(1)-HttpStream(0)-HttpPoll(0), 8 total, 0 closed abnormally (0 connect failure, 0 send limit, 4 transport error)], stompSubProtocol[processed CONNECT(8)-CONNECTED(8)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 69], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 15], sockJsScheduler[pool size = 16, active threads = 1, queued tasks = 5, completed tasks = 10138]

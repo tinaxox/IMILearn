@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useNavigate, useParams } from "react-router-dom"
 import { FileUpload, type FileUploadHandle } from "@/components/layout/FileUpload"
 import { ConfirmDeleteDialog } from "@/components/layout/ConfirmDeleteDialog"
 import { Button } from "@/components/ui/button"
@@ -22,11 +21,10 @@ import { submissionsGridColumns } from "@/features/assignments/submissionsGridCo
 import { Textarea } from "@/components/ui/textarea"
 import { useAuth } from "@/features/auth/AuthContext"
 import { apiClient } from "@/lib/api-client"
-import { formatDateTime, truncateFileName } from "@/lib/utils"
+import { truncateFileName } from "@/lib/utils"
 import type { Assignment, AssignmentRequest, AssignmentSubmission } from "@/types/api"
 import { toast } from "sonner"
 import { FileText, X } from "lucide-react"
-import { BackButton } from "@/components/layout/BackButton"
 import { FileDownload } from "@/features/assignments/FileDownload"
 import { ViewSubmissionDialog } from "@/features/assignments/ViewSubmissionDialog"
 
@@ -42,18 +40,14 @@ function localDateTime(isoDate: string) {
 }
 
 export default function AssignmentDetailPage({
-  assignmentIdOverride,
-  embedded = false,
+  assignmentId: assignmentIdProp,
   onDeleted,
 }: {
-  assignmentIdOverride?: number
-  embedded?: boolean
+  assignmentId: number
   onDeleted?: () => void
 }) {
-  const { assignmentId: routeAssignmentId } = useParams<{ assignmentId: string }>()
-  const assignmentId = assignmentIdOverride ? String(assignmentIdOverride) : routeAssignmentId
+  const assignmentId = String(assignmentIdProp)
   const { user } = useAuth()
-  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -134,8 +128,7 @@ export default function AssignmentDetailPage({
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["assignments", "subject"] })
       toast.success("Assignment deleted")
-      if (embedded) onDeleted?.()
-      else navigate(-1)
+      onDeleted?.()
     },
   })
   const submitAssignment = useMutation({
@@ -165,7 +158,6 @@ export default function AssignmentDetailPage({
     return <p className="text-destructive">Unable to load this assignment.</p>
   const currentAssignment = assignment.data
 
-  const isPastDue = new Date(currentAssignment.dueDate).getTime() < Date.now()
   const submissionColumns = submissionsGridColumns({
     onView: (submission) => setViewingSubmission(submission),
   })
@@ -188,185 +180,81 @@ export default function AssignmentDetailPage({
   )
 
   return (
-    <div
-      className={
-        embedded ? "flex flex-col gap-4 border-t border-border pt-4" : "flex flex-col gap-6"
-      }
-    >
-      {!embedded && (
-        <div className="page-heading">
-          <div className="flex flex-col gap-2">
-            <BackButton />
-            <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-2xl font-semibold">{currentAssignment.title}</h1>
-              <span className={isPastDue ? "text-muted-foreground" : "text-primary"}>
-                {isPastDue ? "Past due" : "Open"}
-              </span>
-            </div>
-            <p className="text-muted-foreground">Due {formatDateTime(currentAssignment.dueDate)}</p>
-          </div>
-        </div>
-      )}
-      {embedded ? (
-        <div className="flex flex-col gap-4">
-          <p className="whitespace-pre-wrap text-sm text-muted-foreground">
-            {currentAssignment.description || "No instructions provided."}
-          </p>
-        </div>
-      ) : (
-        <Card size="sm">
-          <CardHeader>
-            <CardTitle>Description</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="whitespace-pre-wrap text-sm text-muted-foreground">
-              {currentAssignment.description || "No description provided."}
-            </p>
-          </CardContent>
-        </Card>
-      )}
+    <div className="flex flex-col gap-4 border-t border-border pt-4">
+      <div className="flex flex-col gap-4">
+        <p className="whitespace-pre-wrap text-sm text-muted-foreground">
+          {currentAssignment.description || "No instructions provided."}
+        </p>
+      </div>
 
-      {user?.type === "STUDENT" &&
-        (embedded ? (
-          <div className="flex flex-col gap-5">
-            {submission.data &&
-              (submission.data.points !== null ? (
-                <span className="text-sm text-emerald-700">{submission.data.points} points</span>
-              ) : (
-                <span className="text-sm text-muted-foreground">Not graded</span>
-              ))}
-            {submission.isLoading && <Skeleton className="h-12 w-full" />}
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="submission-text">Written response</Label>
-              <Textarea
-                id="submission-text"
-                value={submissionText}
-                onChange={(event) => setSubmissionText(event.target.value)}
-                placeholder="Write your answer or add a note for your professor..."
-              />
-            </div>
-            {visibleSubmittedFiles.length > 0 ? (
-              <div className="flex flex-col gap-2">
-                <Label>Submitted files</Label>
-                {visibleSubmittedFiles.map((file) => (
-                  <div
-                    key={file.id}
-                    className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 px-3 py-2.5 text-sm"
-                  >
-                    <FileText className="size-4 text-primary" />
-                    <span className="min-w-0 flex-1 truncate font-medium" title={file.fileName}>
-                      {truncateFileName(file.fileName)}
-                    </span>
-                    <FileDownload file={file} />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon-sm"
-                      aria-label={`Remove ${file.fileName}`}
-                      className="text-muted-foreground hover:text-destructive"
-                      onClick={() => setRemovedFileIds((current) => [...current, file.id])}
-                    >
-                      <X />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            ) : null}
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="submission-files">Attachments</Label>
-              {submissionFileUpload}
-            </div>
-            <div className="flex justify-end">
-              <Button
-                disabled={
-                  submitAssignment.isPending ||
-                  (!submissionText.trim() &&
-                    !hasSelectedFiles &&
-                    visibleSubmittedFiles.length === 0)
-                }
-                onClick={() => submitAssignment.mutate()}
-              >
-                {submitAssignment.isPending
-                  ? "Submitting..."
-                  : submission.data
-                    ? "Update submission"
-                    : "Submit assignment"}
-              </Button>
-            </div>
+      {user?.type === "STUDENT" && (
+        <div className="flex flex-col gap-5">
+          {submission.data &&
+            (submission.data.points !== null ? (
+              <span className="text-sm text-emerald-700">{submission.data.points} points</span>
+            ) : (
+              <span className="text-sm text-muted-foreground">Not graded</span>
+            ))}
+          {submission.isLoading && <Skeleton className="h-12 w-full" />}
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="submission-text">Written response</Label>
+            <Textarea
+              id="submission-text"
+              value={submissionText}
+              onChange={(event) => setSubmissionText(event.target.value)}
+              placeholder="Write your answer or add a note for your professor..."
+            />
           </div>
-        ) : (
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between border-b border-border pb-4">
-              <CardTitle>My work</CardTitle>
-              {submission.data &&
-                (submission.data.points !== null ? (
-                  <span className="text-emerald-700">{submission.data.points} points</span>
-                ) : (
-                  <span className="text-muted-foreground">Not graded</span>
-                ))}
-            </CardHeader>
-            <CardContent className="flex flex-col gap-5">
-              {submission.isLoading && <Skeleton className="h-12 w-full" />}
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="submission-text">Written response</Label>
-                <Textarea
-                  id="submission-text"
-                  value={submissionText}
-                  onChange={(event) => setSubmissionText(event.target.value)}
-                  placeholder="Write your answer or add a note for your professor..."
-                />
-              </div>
-              {visibleSubmittedFiles.length > 0 ? (
-                <div className="flex flex-col gap-2">
-                  <Label>Submitted files</Label>
-                  {visibleSubmittedFiles.map((file) => (
-                    <div
-                      key={file.id}
-                      className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 px-3 py-2.5 text-sm"
-                    >
-                      <FileText className="size-4 text-primary" />
-                      <span className="min-w-0 flex-1 truncate font-medium" title={file.fileName}>
-                        {truncateFileName(file.fileName)}
-                      </span>
-                      <FileDownload file={file} />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon-sm"
-                        aria-label={`Remove ${file.fileName}`}
-                        className="text-muted-foreground hover:text-destructive"
-                        onClick={() => setRemovedFileIds((current) => [...current, file.id])}
-                      >
-                        <X />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              ) : null}
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="submission-files">Attachments</Label>
-                {submissionFileUpload}
-              </div>
-              <div className="flex justify-end">
-                <Button
-                  disabled={
-                    submitAssignment.isPending ||
-                    (!submissionText.trim() &&
-                      !hasSelectedFiles &&
-                      visibleSubmittedFiles.length === 0)
-                  }
-                  onClick={() => submitAssignment.mutate()}
+          {visibleSubmittedFiles.length > 0 ? (
+            <div className="flex flex-col gap-2">
+              <Label>Submitted files</Label>
+              {visibleSubmittedFiles.map((file) => (
+                <div
+                  key={file.id}
+                  className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 px-3 py-2.5 text-sm"
                 >
-                  {submitAssignment.isPending
-                    ? "Submitting..."
-                    : submission.data
-                      ? "Update submission"
-                      : "Submit assignment"}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                  <FileText className="size-4 text-primary" />
+                  <span className="min-w-0 flex-1 truncate font-medium" title={file.fileName}>
+                    {truncateFileName(file.fileName)}
+                  </span>
+                  <FileDownload file={file} />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label={`Remove ${file.fileName}`}
+                    className="text-muted-foreground hover:text-destructive"
+                    onClick={() => setRemovedFileIds((current) => [...current, file.id])}
+                  >
+                    <X />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          ) : null}
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="submission-files">Attachments</Label>
+            {submissionFileUpload}
+          </div>
+          <div className="flex justify-end">
+            <Button
+              disabled={
+                submitAssignment.isPending ||
+                (!submissionText.trim() &&
+                  !hasSelectedFiles &&
+                  visibleSubmittedFiles.length === 0)
+              }
+              onClick={() => submitAssignment.mutate()}
+            >
+              {submitAssignment.isPending
+                ? "Submitting..."
+                : submission.data
+                  ? "Update submission"
+                  : "Submit assignment"}
+            </Button>
+          </div>
+        </div>
+      )}
 
       {canManage && (
         <Card>
@@ -397,10 +285,10 @@ export default function AssignmentDetailPage({
       {canManage && (
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={openEdit}>
-            {embedded ? "Edit assignment" : "Edit"}
+            Edit assignment
           </Button>
           <Button variant="destructive" onClick={() => setDeleteOpen(true)}>
-            {embedded ? "Delete assignment" : "Delete"}
+            Delete assignment
           </Button>
         </div>
       )}

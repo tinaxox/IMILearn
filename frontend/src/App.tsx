@@ -7,7 +7,6 @@ import UsersPage from "@/features/users/UsersPage"
 import SubjectsPage from "@/features/subjects/SubjectsPage"
 import SubjectDetailPage from "@/features/subjects/SubjectDetailPage"
 import AssignmentsPage from "@/features/assignments/AssignmentsPage"
-import AssignmentDetailPage from "@/features/assignments/AssignmentDetailPage"
 import ExamsPage from "@/features/exams/ExamsPage"
 import QuizzesPage from "@/features/quizzes/QuizzesPage"
 import QuizTakePage from "@/features/quizzes/QuizTakePage"
@@ -24,7 +23,6 @@ export default function App() {
           <Route path="/subjects" element={<SubjectsPage />} />
           <Route path="/subjects/:subjectId" element={<SubjectDetailPage />} />
           <Route path="/subjects/:subjectId/assignments" element={<AssignmentsPage />} />
-          <Route path="/assignments/:assignmentId" element={<AssignmentDetailPage />} />
           <Route path="/subjects/:subjectId/exams" element={<ExamsPage />} />
           <Route path="/exams" element={<ExamsPage />} />
           <Route path="/subjects/:subjectId/quizzes" element={<QuizzesPage />} />

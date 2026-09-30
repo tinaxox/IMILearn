@@ -72,12 +72,7 @@ export function AssignmentRow({
       </div>
       {expanded && (
         <div className="assignment-expanded mt-4">
-          <AssignmentDetailPage
-            key={assignment.id}
-            assignmentIdOverride={assignment.id}
-            embedded
-            onDeleted={onDeleted}
-          />
+          <AssignmentDetailPage key={assignment.id} assignmentId={assignment.id} onDeleted={onDeleted} />
         </div>
       )}
     </div>
